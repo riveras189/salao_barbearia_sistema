@@ -5,3 +5,11 @@ test-results/
 playwright-report/
 start.log
 npm-debug.log*
+backup/
+imagens/
+public/
+storage/
+*.sql
+*.backup
+*.txt
+npx
