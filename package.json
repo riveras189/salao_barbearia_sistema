@@ -1,0 +1,45 @@
+{
+  "name": "salao_barbearia_sistema",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --webpack",
+    "build": "next build --webpack",
+    "start": "next start",
+    "test": "vitest run",
+    "test:unit": "vitest run",
+    "e2e": "playwright test"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.6.0",
+    "@prisma/client": "^7.6.0",
+    "argon2": "^0.44.0",
+    "bcryptjs": "^3.0.3",
+    "clsx": "^2.1.1",
+    "dotenv": "*",
+    "exceljs": "^4.4.0",
+    "lucide-react": "*",
+    "mysql2": "^3.20.0",
+    "next": "*",
+    "pdf-lib": "^1.17.1",
+    "pdfkit": "^0.18.0",
+    "pg": "^8.20.0",
+    "react": "*",
+    "react-dom": "*",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.53.1",
+    "@tailwindcss/postcss": "^4.2.2",
+    "@testing-library/jest-dom": "^6.8.0",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/pdfkit": "^0.17.5",
+    "@types/react-dom": "^19.2.3",
+    "jsdom": "^26.1.0",
+    "prisma": "*",
+    "tailwindcss": "^4.2.2",
+    "typescript": "*",
+    "vitest": "^3.2.4"
+  }
+}

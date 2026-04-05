@@ -1,0 +1,77 @@
+:root[data-model="barbearia_v1"] {
+  --brand-1: #c89b3c;
+  --brand-2: #8b1e24;
+  --brand-color: #c89b3c;
+  --brand-color-strong: #9f7422;
+  --accent: #8b1e24;
+  --bg-rgb: 22, 19, 17;
+  --bg: #161311;
+  --bg-2: #221d1a;
+  --card: #241f1b;
+  --card-2: #2c2621;
+  --sidebar-bg: #120f0d;
+  --sidebar-text: #f1e4d0;
+  --sidebar-muted: #aa9478;
+  --sidebar-active: rgba(200, 155, 60, 0.18);
+  --sidebar-border: rgba(200, 155, 60, 0.28);
+  --text: #f5efe6;
+  --muted: #c4b39f;
+  --subtle: #9f8d7b;
+  --line: #4b4036;
+  --line-2: #685747;
+  --success: #2f9e44;
+  --warning: #f08c00;
+  --danger: #e03131;
+  --info: #74c0fc;
+  --brand-gradient: linear-gradient(135deg, #c89b3c 0%, #8b1e24 100%);
+  --brand-gradient-subtle: linear-gradient(135deg, rgba(200, 155, 60, 0.16) 0%, rgba(139, 30, 36, 0.12) 100%);
+  --shadow-card: 0 8px 28px rgba(0, 0, 0, 0.28);
+  --shadow-brand: 0 10px 34px rgba(200, 155, 60, 0.22);
+}
+
+html[data-model="barbearia_v1"] body {
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(circle at top right, rgba(200, 155, 60, 0.14), transparent 30%),
+    radial-gradient(circle at bottom left, rgba(139, 30, 36, 0.18), transparent 28%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0));
+}
+
+html[data-model="barbearia_v1"] .barber-stripes {
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.04) 0,
+    rgba(255, 255, 255, 0.04) 12px,
+    transparent 12px,
+    transparent 24px
+  );
+}
+
+html[data-model="barbearia_v1"] .btn-brand {
+  color: #fff8ef;
+  border: 1px solid rgba(200, 155, 60, 0.3);
+}
+
+html[data-model="barbearia_v1"] .card {
+  background: var(--card);
+  border-color: var(--line);
+  box-shadow: var(--shadow-card);
+}
+
+html[data-model="barbearia_v1"] .model-toggle-button {
+  border-color: rgba(200, 155, 60, 0.28);
+}
+
+html[data-model="barbearia_v1"] .model-toggle-menu,
+html[data-model="barbearia_v1"] .model-toggle-option.is-selected {
+  background: var(--card);
+}
+
+:root[data-model="personalizado_v1"] {
+  --brand-1: #0f766e;
+  --brand-2: #0ea5e9;
+  --brand-color: #14b8a6;
+  --accent: #0ea5e9;
+  --brand-gradient: linear-gradient(135deg, #14b8a6 0%, #0ea5e9 100%);
+  --brand-gradient-subtle: linear-gradient(135deg, rgba(20, 184, 166, 0.12) 0%, rgba(14, 165, 233, 0.12) 100%);
+}
