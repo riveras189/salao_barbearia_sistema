@@ -1,6 +1,11 @@
 import PanelBackButton from "@/components/PanelBackButton";
 import { requireUser } from "@/lib/auth";
-import { getBackupCapabilities, getBackupRootDir, listBackups } from "@/lib/backup";
+import {
+  getBackupCapabilities,
+  getBackupRestoreGuide,
+  getBackupRootDir,
+  listBackups,
+} from "@/lib/backup";
 import {
   createBackupAction,
   deleteBackupAction,
@@ -61,6 +66,9 @@ const buttonWarningClass =
 const buttonDangerClass =
   "inline-flex h-10 items-center justify-center rounded-xl bg-rose-600 px-3 text-sm font-semibold text-white transition hover:opacity-90";
 
+const codeBlockClass =
+  "mt-3 overflow-x-auto rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 font-mono text-xs text-[var(--text)]";
+
 export default async function BackupPage({ searchParams }: PageProps) {
   await requireUser();
 
@@ -68,11 +76,14 @@ export default async function BackupPage({ searchParams }: PageProps) {
   const ok = getSingleParam(params.ok);
   const error = getSingleParam(params.error);
 
-  const [backups, capabilities] = await Promise.all([
+  const [backups, capabilities, restoreGuide] = await Promise.all([
     listBackups(),
     getBackupCapabilities(),
+    Promise.resolve(getBackupRestoreGuide()),
   ]);
   const backupRoot = getBackupRootDir();
+  const databaseLabel =
+    capabilities.databaseEngine === "mysql" ? "MySQL" : "PostgreSQL";
 
   return (
     <div className="space-y-6 p-4 md:p-6 text-[var(--text)]">
@@ -85,11 +96,11 @@ export default async function BackupPage({ searchParams }: PageProps) {
               Backup e restaurar
             </h1>
 
-            <p className="mt-1 text-sm text-[var(--muted)]">
-              Faça backup do banco, baixe o arquivo SQL e restaure quando
-              precisar. No Render, o fluxo mais confiável é baixar o SQL e
-              restaurar externamente no banco.
-            </p>
+             <p className="mt-1 text-sm text-[var(--muted)]">
+               Faça backup do banco, baixe o arquivo SQL e restaure quando
+               precisar. No Render, o fluxo mais confiável é baixar o SQL e
+               restaurar externamente no banco {databaseLabel}.
+             </p>
 
             <p className="mt-2 text-xs text-[var(--muted)]">
               Pasta dos backups:{" "}
@@ -139,12 +150,12 @@ export default async function BackupPage({ searchParams }: PageProps) {
           </div>
         ) : null}
 
-        {!capabilities.canCreateDump ? (
-          <div className="mt-4 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-700 dark:text-rose-300">
-            O servidor atual nao encontrou o utilitario <code>pg_dump</code>.
-            Configure <code>PG_BIN_DIR</code> ou gere o backup externamente.
-          </div>
-        ) : null}
+         {!capabilities.canCreateDump ? (
+           <div className="mt-4 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-700 dark:text-rose-300">
+             O servidor atual nao encontrou o utilitario <code>{capabilities.dumpBinaryName}</code>.
+             Configure <code>{capabilities.binDirEnvName}</code> ou gere o backup externamente.
+           </div>
+         ) : null}
       </div>
 
       {ok ? (
@@ -186,13 +197,13 @@ export default async function BackupPage({ searchParams }: PageProps) {
                 Restaurar arquivo SQL
               </button>
             </form>
-          ) : (
-            <div className="mt-4 rounded-xl border border-dashed border-[var(--line)] px-4 py-4 text-sm text-[var(--muted)]">
-              O servidor atual nao encontrou o utilitario <code>psql</code>.
-              Para restaurar no Render, use a <code>DIRECT_URL</code> em um
-              computador com PostgreSQL instalado ou em uma ferramenta do Neon.
-            </div>
-          )}
+           ) : (
+             <div className="mt-4 rounded-xl border border-dashed border-[var(--line)] px-4 py-4 text-sm text-[var(--muted)]">
+               O servidor atual nao encontrou o utilitario <code>{capabilities.restoreBinaryName}</code>.
+               Para restaurar no Render, use o acesso externo do banco em um
+               computador com as ferramentas do {databaseLabel} instaladas.
+             </div>
+           )}
         </div>
 
         <div className={`${cardClass} p-5`}>
@@ -207,6 +218,64 @@ export default async function BackupPage({ searchParams }: PageProps) {
           </div>
         </div>
       </div>
+
+      {!capabilities.canRestoreSql ? (
+        <div className={`${cardClass} p-5`}>
+          <h2 className="text-lg font-semibold text-[var(--text)]">
+            Restauracao assistida
+          </h2>
+
+          <p className="mt-1 text-sm text-[var(--muted)]">
+            Quando o servidor nao consegue restaurar sozinho, use estes comandos
+            no seu computador com PostgreSQL instalado.
+          </p>
+
+          {restoreGuide.directUrlConfigured ? (
+            <div className="mt-4 space-y-4 text-sm text-[var(--muted)]">
+              <p>
+                Banco atual: <span className="font-mono text-[var(--text)]">{restoreGuide.database || "-"}</span>
+                {" "}em <span className="font-mono text-[var(--text)]">{restoreGuide.host || "-"}</span>
+              </p>
+
+              <p>
+                Use a mesma conexao configurada em <code>DIRECT_URL</code>.
+                Referencia: <span className="font-mono text-[var(--text)] break-all">{restoreGuide.directUrlMasked}</span>
+              </p>
+
+              <div>
+                <p className="font-medium text-[var(--text)]">
+                  1. Limpar o banco antes de restaurar
+                </p>
+                <pre className={codeBlockClass}>{restoreGuide.resetCommand}</pre>
+              </div>
+
+              <div>
+                <p className="font-medium text-[var(--text)]">
+                  2. Restaurar o arquivo SQL
+                </p>
+                <pre className={codeBlockClass}>{restoreGuide.restoreCommand}</pre>
+              </div>
+
+              <div>
+                <p className="font-medium text-[var(--text)]">
+                  3. Reaplicar as migrations do projeto
+                </p>
+                <pre className={codeBlockClass}>{restoreGuide.migrateCommand}</pre>
+              </div>
+
+              <p>
+                Troque apenas <code>C:\caminho\do\backup.sql</code> pelo
+                arquivo correto. A senha da conexao foi ocultada de proposito.
+              </p>
+            </div>
+          ) : (
+            <div className="mt-4 rounded-xl border border-dashed border-[var(--line)] px-4 py-4 text-sm text-[var(--muted)]">
+              Configure <code>DIRECT_URL</code> para que a pagina possa montar as
+              instrucoes de restauracao externa.
+            </div>
+          )}
+        </div>
+      ) : null}
 
       <div className={`${cardClass} p-5`}>
         <div className="mb-4 flex items-center justify-between">
@@ -262,12 +331,18 @@ export default async function BackupPage({ searchParams }: PageProps) {
                       Baixar SQL
                     </a>
 
-                    <form action={restoreSavedBackupAction}>
-                      <input type="hidden" name="name" value={item.name} />
-                      <button type="submit" className={buttonWarningClass}>
-                        Restaurar
-                      </button>
-                    </form>
+                    {capabilities.canRestoreSql ? (
+                      <form action={restoreSavedBackupAction}>
+                        <input type="hidden" name="name" value={item.name} />
+                        <button type="submit" className={buttonWarningClass}>
+                          Restaurar
+                        </button>
+                      </form>
+                    ) : (
+                      <span className={`${buttonWarningClass} cursor-not-allowed opacity-60`}>
+                        Restaurar externamente
+                      </span>
+                    )}
 
                     <form action={deleteBackupAction}>
                       <input type="hidden" name="name" value={item.name} />

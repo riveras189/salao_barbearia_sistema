@@ -25,6 +25,18 @@ type BackupMeta = {
   assets: BackupAsset[];
 };
 
+type DatabaseEngine = "postgresql" | "mysql";
+
+type ParsedDatabaseUrl = {
+  engine: DatabaseEngine;
+  host: string;
+  port: string;
+  user: string;
+  password: string;
+  database: string;
+  schema?: string;
+};
+
 export type BackupItem = BackupMeta & {
   sizeBytes: number;
 };
@@ -33,6 +45,20 @@ export type BackupCapabilities = {
   canCreateDump: boolean;
   canRestoreSql: boolean;
   isRenderEnvironment: boolean;
+  databaseEngine: DatabaseEngine;
+  dumpBinaryName: string;
+  restoreBinaryName: string;
+  binDirEnvName: string;
+};
+
+export type BackupRestoreGuide = {
+  directUrlConfigured: boolean;
+  directUrlMasked: string | null;
+  host: string | null;
+  database: string | null;
+  resetCommand: string | null;
+  restoreCommand: string | null;
+  migrateCommand: string | null;
 };
 
 const PROJECT_ROOT = process.cwd();
@@ -88,35 +114,88 @@ function getTimestamp() {
   return `${yyyy}${mm}${dd}-${hh}${mi}${ss}`;
 }
 
-function parseDatabaseUrl() {
+function parseDatabaseUrl(): ParsedDatabaseUrl {
   const urlString = process.env.DATABASE_URL;
   if (!urlString) {
     throw new Error("DATABASE_URL não foi configurada.");
   }
 
   const url = new URL(urlString);
+  const protocol = url.protocol.toLowerCase();
+  let engine: DatabaseEngine;
 
-  if (!url.protocol.startsWith("postgres")) {
-    throw new Error("DATABASE_URL precisa ser PostgreSQL.");
+  if (protocol.startsWith("postgres")) {
+    engine = "postgresql";
+  } else if (protocol.startsWith("mysql")) {
+    engine = "mysql";
+  } else {
+    throw new Error("DATABASE_URL precisa usar PostgreSQL ou MySQL.");
   }
 
   const database = url.pathname.replace(/^\/+/, "");
   const schema = url.searchParams.get("schema") || "public";
 
   return {
+    engine,
     host: url.hostname || "localhost",
-    port: url.port || "5432",
+    port: url.port || (engine === "postgresql" ? "5432" : "3306"),
     user: decodeURIComponent(url.username || ""),
     password: decodeURIComponent(url.password || ""),
     database,
-    schema,
+    schema: engine === "postgresql" ? schema : undefined,
   };
 }
 
-async function resolveBinary(binary: "pg_dump" | "psql") {
-  const exe = process.platform === "win32" ? `${binary}.exe` : binary;
+function parseConnectionString(urlString?: string | null) {
+  if (!urlString) return null;
 
-  const envDir = process.env.PG_BIN_DIR;
+  const url = new URL(urlString);
+  const protocol = url.protocol.toLowerCase();
+
+  if (!protocol.startsWith("postgres") && !protocol.startsWith("mysql")) {
+    throw new Error("A URL de conexao precisa usar PostgreSQL ou MySQL.");
+  }
+
+  return {
+    url,
+    host: url.hostname || null,
+    database: url.pathname.replace(/^\/+/, "") || null,
+  };
+}
+
+function maskConnectionString(urlString?: string | null) {
+  const parsed = parseConnectionString(urlString);
+  if (!parsed) return null;
+
+  if (parsed.url.password) {
+    parsed.url.password = "********";
+  }
+
+  return parsed.url.toString();
+}
+
+function getBackupCommands(engine: DatabaseEngine) {
+  return engine === "postgresql"
+    ? {
+        dumpBinaryName: "pg_dump",
+        restoreBinaryName: "psql",
+        binDirEnvName: "PG_BIN_DIR",
+      }
+    : {
+        dumpBinaryName: "mysqldump",
+        restoreBinaryName: "mysql",
+        binDirEnvName: "MYSQL_BIN_DIR",
+      };
+}
+
+async function resolveBinary(engine: DatabaseEngine, binary: string) {
+  const exe = process.platform === "win32" ? `${binary}.exe` : binary;
+  const commands = getBackupCommands(engine);
+
+  const envDir =
+    process.env.DB_BIN_DIR ||
+    process.env[commands.binDirEnvName] ||
+    (engine === "postgresql" ? process.env.PG_BIN_DIR : undefined);
   if (envDir) {
     const envPath = path.join(envDir, exe);
     if (await exists(envPath)) {
@@ -124,7 +203,7 @@ async function resolveBinary(binary: "pg_dump" | "psql") {
     }
   }
 
-  if (process.platform === "win32") {
+  if (process.platform === "win32" && engine === "postgresql") {
     const versions = ["18", "17", "16", "15", "14", "13", "12", "11", "10"];
     const bases = [
       "C:\\Program Files\\PostgreSQL",
@@ -144,9 +223,9 @@ async function resolveBinary(binary: "pg_dump" | "psql") {
   return exe;
 }
 
-async function canExecuteBinary(binary: "pg_dump" | "psql") {
+async function canExecuteBinary(engine: DatabaseEngine, binary: string) {
   try {
-    const command = await resolveBinary(binary);
+    const command = await resolveBinary(engine, binary);
     await runCommand(command, ["--version"]);
     return true;
   } catch {
@@ -154,7 +233,12 @@ async function canExecuteBinary(binary: "pg_dump" | "psql") {
   }
 }
 
-async function runCommand(command: string, args: string[], extraEnv?: Record<string, string | undefined>) {
+async function runCommand(
+  command: string,
+  args: string[],
+  extraEnv?: Record<string, string | undefined>,
+  stdin?: string
+) {
   return new Promise<{ stdout: string; stderr: string }>((resolve, reject) => {
     const child = spawn(command, args, {
       env: {
@@ -188,6 +272,11 @@ async function runCommand(command: string, args: string[], extraEnv?: Record<str
       }
       reject(error);
     });
+
+    if (stdin) {
+      child.stdin.write(stdin);
+      child.stdin.end();
+    }
 
     child.on("close", (code) => {
       if (code === 0) {
@@ -241,15 +330,45 @@ export function getBackupRootDir() {
 }
 
 export async function getBackupCapabilities(): Promise<BackupCapabilities> {
+  const db = parseDatabaseUrl();
+  const commands = getBackupCommands(db.engine);
   const [canCreateDump, canRestoreSql] = await Promise.all([
-    canExecuteBinary("pg_dump"),
-    canExecuteBinary("psql"),
+    canExecuteBinary(db.engine, commands.dumpBinaryName),
+    canExecuteBinary(db.engine, commands.restoreBinaryName),
   ]);
 
   return {
     canCreateDump,
     canRestoreSql,
     isRenderEnvironment: isRenderEnvironment(),
+    databaseEngine: db.engine,
+    dumpBinaryName: commands.dumpBinaryName,
+    restoreBinaryName: commands.restoreBinaryName,
+    binDirEnvName: commands.binDirEnvName,
+  };
+}
+
+export function getBackupRestoreGuide(): BackupRestoreGuide {
+  const directUrl = process.env.DIRECT_URL || process.env.DATABASE_URL || null;
+  const parsed = parseConnectionString(directUrl);
+  const masked = maskConnectionString(directUrl);
+  const directUrlPlaceholder = masked ? "SUA_DIRECT_URL" : null;
+  const databaseUrlPlaceholder = masked ? "SUA_DATABASE_URL" : null;
+
+  return {
+    directUrlConfigured: Boolean(directUrl),
+    directUrlMasked: masked,
+    host: parsed?.host ?? null,
+    database: parsed?.database ?? null,
+    resetCommand: directUrlPlaceholder
+      ? `"C:\\Program Files\\PostgreSQL\\18\\bin\\psql.exe" "${directUrlPlaceholder}" -v ON_ERROR_STOP=1 -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"`
+      : null,
+    restoreCommand: directUrlPlaceholder
+      ? `"C:\\Program Files\\PostgreSQL\\18\\bin\\psql.exe" "${directUrlPlaceholder}" -v ON_ERROR_STOP=1 -f "C:\\caminho\\do\\backup.sql"`
+      : null,
+    migrateCommand: directUrlPlaceholder && databaseUrlPlaceholder
+      ? `set DATABASE_URL=${databaseUrlPlaceholder} && set DIRECT_URL=${directUrlPlaceholder} && npx prisma migrate deploy`
+      : null,
   };
 }
 
@@ -286,30 +405,51 @@ export async function createBackup() {
   await mkdir(folderPath, { recursive: true });
 
   const db = parseDatabaseUrl();
-  const pgDump = await resolveBinary("pg_dump");
+  const commands = getBackupCommands(db.engine);
+  const dumpBinary = await resolveBinary(db.engine, commands.dumpBinaryName);
   const databaseFile = path.join(folderPath, "database.sql");
 
-  await runCommand(
-    pgDump,
-    [
-      "-h",
-      db.host,
-      "-p",
-      db.port,
-      "-U",
-      db.user,
-      "-d",
-      db.database,
-      "-Fp",
-      "--clean",
-      "--if-exists",
-      "--no-owner",
-      "--no-privileges",
-      "-f",
-      databaseFile,
-    ],
-    { PGPASSWORD: db.password }
-  );
+  if (db.engine === "postgresql") {
+    await runCommand(
+      dumpBinary,
+      [
+        "-h",
+        db.host,
+        "-p",
+        db.port,
+        "-U",
+        db.user,
+        "-d",
+        db.database,
+        "-Fp",
+        "--clean",
+        "--if-exists",
+        "--no-owner",
+        "--no-privileges",
+        "-f",
+        databaseFile,
+      ],
+      { PGPASSWORD: db.password }
+    );
+  } else {
+    const { stdout } = await runCommand(
+      dumpBinary,
+      [
+        `--host=${db.host}`,
+        `--port=${db.port}`,
+        `--user=${db.user}`,
+        "--single-transaction",
+        "--routines",
+        "--triggers",
+        "--default-character-set=utf8mb4",
+        "--databases",
+        db.database,
+      ],
+      { MYSQL_PWD: db.password }
+    );
+
+    await writeFile(databaseFile, stdout, "utf8");
+  }
 
   const assets: BackupAsset[] = [];
 
@@ -347,7 +487,8 @@ export async function createBackup() {
 
 export async function createTemporaryBackupSql() {
   const db = parseDatabaseUrl();
-  const pgDump = await resolveBinary("pg_dump");
+  const commands = getBackupCommands(db.engine);
+  const dumpBinary = await resolveBinary(db.engine, commands.dumpBinaryName);
   const stamp = getTimestamp();
   const tempDir = path.join(os.tmpdir(), "salao-backup-download");
 
@@ -356,27 +497,47 @@ export async function createTemporaryBackupSql() {
   const filename = `backup-${stamp}.sql`;
   const filePath = path.join(tempDir, filename);
 
-  await runCommand(
-    pgDump,
-    [
-      "-h",
-      db.host,
-      "-p",
-      db.port,
-      "-U",
-      db.user,
-      "-d",
-      db.database,
-      "-Fp",
-      "--clean",
-      "--if-exists",
-      "--no-owner",
-      "--no-privileges",
-      "-f",
-      filePath,
-    ],
-    { PGPASSWORD: db.password }
-  );
+  if (db.engine === "postgresql") {
+    await runCommand(
+      dumpBinary,
+      [
+        "-h",
+        db.host,
+        "-p",
+        db.port,
+        "-U",
+        db.user,
+        "-d",
+        db.database,
+        "-Fp",
+        "--clean",
+        "--if-exists",
+        "--no-owner",
+        "--no-privileges",
+        "-f",
+        filePath,
+      ],
+      { PGPASSWORD: db.password }
+    );
+  } else {
+    const { stdout } = await runCommand(
+      dumpBinary,
+      [
+        `--host=${db.host}`,
+        `--port=${db.port}`,
+        `--user=${db.user}`,
+        "--single-transaction",
+        "--routines",
+        "--triggers",
+        "--default-character-set=utf8mb4",
+        "--databases",
+        db.database,
+      ],
+      { MYSQL_PWD: db.password }
+    );
+
+    await writeFile(filePath, stdout, "utf8");
+  }
 
   return {
     filename,
@@ -386,28 +547,48 @@ export async function createTemporaryBackupSql() {
 
 async function restoreDatabaseFromSql(sqlFilePath: string) {
   const db = parseDatabaseUrl();
-  const psql = await resolveBinary("psql");
+  const commands = getBackupCommands(db.engine);
+  const restoreBinary = await resolveBinary(db.engine, commands.restoreBinaryName);
+
+  if (db.engine === "postgresql") {
+    await runCommand(
+      restoreBinary,
+      [
+        "-X",
+        "-h",
+        db.host,
+        "-p",
+        db.port,
+        "-U",
+        db.user,
+        "-d",
+        db.database,
+        "-v",
+        "ON_ERROR_STOP=1",
+        "-f",
+        sqlFilePath,
+      ],
+      {
+        PGPASSWORD: db.password,
+      }
+    );
+    return;
+  }
+
+  const sql = await readFile(sqlFilePath, "utf8");
 
   await runCommand(
-    psql,
+    restoreBinary,
     [
-      "-X",
-      "-h",
-      db.host,
-      "-p",
-      db.port,
-      "-U",
-      db.user,
-      "-d",
+      `--host=${db.host}`,
+      `--port=${db.port}`,
+      `--user=${db.user}`,
       db.database,
-      "-v",
-      "ON_ERROR_STOP=1",
-      "-f",
-      sqlFilePath,
     ],
     {
-      PGPASSWORD: db.password,
-    }
+      MYSQL_PWD: db.password,
+    },
+    sql
   );
 }
 
