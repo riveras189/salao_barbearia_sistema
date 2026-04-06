@@ -16,6 +16,8 @@ services:
         fromDatabase:
           name: salao-rf-db
           property: connectionString
+      - key: DIRECT_URL
+        sync: false
       - key: AUTH_SECRET
         generateValue: true
       - key: APP_URL

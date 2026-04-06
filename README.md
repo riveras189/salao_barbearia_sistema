@@ -21,6 +21,7 @@ Clone funcional do `salao_rf_sistema` com identidade visual de barbearia e supor
 ## Variáveis de ambiente
 
 - `DATABASE_URL`
+- `DIRECT_URL`
 - `AUTH_SECRET`
 - `APP_URL`
 - `NEXT_PUBLIC_APP_URL`
@@ -43,9 +44,10 @@ Depois de conectar o repositório no Render:
 1. Crie o Blueprint usando o `render.yaml`
 2. Defina `APP_URL` com a URL pública do serviço, por exemplo `https://seu-app.onrender.com`
 3. Defina `NEXT_PUBLIC_APP_URL` com a mesma URL pública
-4. Faça o primeiro deploy
+4. Se estiver usando Neon ou outro pooler, defina `DIRECT_URL` com a string de conexão direta do Postgres, sem `-pooler`
+5. Faça o primeiro deploy
 
-Observação: os uploads do sistema são gravados localmente em `public/uploads`, então o disco persistente precisa permanecer ativo no serviço.
+Observação: os uploads do sistema são gravados localmente em `public/uploads`, então o disco persistente precisa permanecer ativo no serviço. As migrações do Prisma usam `DIRECT_URL` quando ela existir para evitar timeout de advisory lock em conexões com pooler.
 
 ## Testes
 
