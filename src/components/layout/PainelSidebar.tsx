@@ -123,30 +123,30 @@ export default function PainelSidebar({ companyName, open, onClose }: PainelSide
           open ? "translate-x-0" : "-translate-x-full"
         )}
         style={{
-          background: "linear-gradient(180deg, #0d0820 0%, #0a0615 50%, #0d0820 100%)",
-          borderRight: "1px solid rgba(124,58,237,0.2)",
+          background: "linear-gradient(180deg, var(--sidebar-bg) 0%, color-mix(in srgb, var(--sidebar-bg) 92%, black 8%) 50%, var(--sidebar-bg) 100%)",
+          borderRight: "1px solid var(--sidebar-border)",
         }}
       >
         {/* Header */}
         <div
           className="flex h-16 shrink-0 items-center justify-between px-4"
-          style={{ borderBottom: "1px solid rgba(124,58,237,0.15)" }}
+          style={{ borderBottom: "1px solid var(--sidebar-border)" }}
         >
           <div className="flex items-center gap-2.5 min-w-0">
             <div
               className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl"
-              style={{ background: "linear-gradient(135deg, #7c3aed, #d946ef)" }}
+              style={{ background: "var(--brand-gradient)" }}
             >
               <Scissors className="h-4 w-4 text-white" />
             </div>
             <div className="min-w-0">
               <p
                 className="text-[10px] font-semibold uppercase tracking-[0.2em]"
-                style={{ color: "rgba(217,70,239,0.7)" }}
+                style={{ color: "var(--sidebar-muted)" }}
               >
                 Painel
               </p>
-              <p className="truncate text-sm font-bold" style={{ color: "#ffffff" }}>
+              <p className="truncate text-sm font-bold" style={{ color: "var(--sidebar-text)" }}>
                 {companyName}
               </p>
             </div>
@@ -156,8 +156,8 @@ export default function PainelSidebar({ companyName, open, onClose }: PainelSide
             type="button"
             onClick={onClose}
             className="rounded-xl p-1.5 transition lg:hidden"
-            style={{ color: "#8b7fb5" }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(124,58,237,0.15)")}
+            style={{ color: "var(--sidebar-muted)" }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = "var(--sidebar-active)")}
             onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
             aria-label="Fechar menu"
           >
@@ -171,7 +171,7 @@ export default function PainelSidebar({ companyName, open, onClose }: PainelSide
             <div key={group.label}>
               <p
                 className="mb-1.5 px-2 text-[10px] font-bold uppercase tracking-[0.25em]"
-                style={{ color: "rgba(139,127,181,0.6)" }}
+                style={{ color: "var(--sidebar-muted)" }}
               >
                 {group.label}
               </p>
@@ -186,27 +186,28 @@ export default function PainelSidebar({ companyName, open, onClose }: PainelSide
                     <div key={item.href}>
                       <Link
                         href={item.href}
+                        prefetch={false}
                         onClick={onClose}
                         className="flex items-center justify-between gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200"
                         style={
                           active
                             ? {
-                                background: "linear-gradient(135deg, rgba(124,58,237,0.25), rgba(217,70,239,0.15))",
-                                color: "#e9d5ff",
-                                boxShadow: "inset 0 0 0 1px rgba(124,58,237,0.3)",
+                                background: "var(--sidebar-active)",
+                                color: "var(--sidebar-text)",
+                                boxShadow: "inset 0 0 0 1px var(--sidebar-border)",
                               }
-                            : { color: "#8b7fb5" }
+                            : { color: "var(--sidebar-muted)" }
                         }
                         onMouseEnter={(e) => {
                           if (!active) {
-                            e.currentTarget.style.background = "rgba(124,58,237,0.1)";
-                            e.currentTarget.style.color = "#c4b5fd";
+                            e.currentTarget.style.background = "var(--sidebar-active)";
+                            e.currentTarget.style.color = "var(--sidebar-text)";
                           }
                         }}
                         onMouseLeave={(e) => {
                           if (!active) {
                             e.currentTarget.style.background = "transparent";
-                            e.currentTarget.style.color = "#8b7fb5";
+                            e.currentTarget.style.color = "var(--sidebar-muted)";
                           }
                         }}
                       >
@@ -215,13 +216,13 @@ export default function PainelSidebar({ companyName, open, onClose }: PainelSide
                             className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
                             style={{
                               background: active
-                                ? "rgba(124,58,237,0.3)"
+                                ? "var(--sidebar-active)"
                                 : "rgba(255,255,255,0.04)",
                             }}
                           >
                             <Icon
                               className="h-4 w-4"
-                              style={{ color: active ? "#e9d5ff" : item.color || "#8b7fb5" }}
+                              style={{ color: active ? "var(--sidebar-text)" : item.color || "var(--sidebar-muted)" }}
                             />
                           </span>
                           <span className="truncate">{item.label}</span>
@@ -231,7 +232,7 @@ export default function PainelSidebar({ companyName, open, onClose }: PainelSide
                           <ChevronRight
                             className="h-3.5 w-3.5 shrink-0 transition-transform duration-200"
                             style={{
-                              color: "#6b6584",
+                              color: "var(--sidebar-muted)",
                               transform: open_sub ? "rotate(90deg)" : "rotate(0deg)",
                             }}
                           />
@@ -240,7 +241,7 @@ export default function PainelSidebar({ companyName, open, onClose }: PainelSide
 
                       {hasChildren && open_sub && (
                         <div className="ml-4 mt-0.5 space-y-0.5 border-l pl-3"
-                          style={{ borderColor: "rgba(124,58,237,0.2)" }}
+                          style={{ borderColor: "var(--sidebar-border)" }}
                         >
                           {item.children!.map((child) => {
                             const ChildIcon = child.icon;
@@ -251,18 +252,19 @@ export default function PainelSidebar({ companyName, open, onClose }: PainelSide
                               <Link
                                 key={child.href}
                                 href={child.href}
+                                prefetch={false}
                                 onClick={onClose}
                                 className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-all duration-200"
                                 style={
                                   childActive
-                                    ? { color: "#c4b5fd", fontWeight: 600 }
-                                    : { color: "#6b6584" }
+                                    ? { color: "var(--sidebar-text)", fontWeight: 600 }
+                                    : { color: "var(--sidebar-muted)" }
                                 }
                                 onMouseEnter={(e) => {
-                                  if (!childActive) e.currentTarget.style.color = "#a78bfa";
+                                  if (!childActive) e.currentTarget.style.color = "var(--sidebar-text)";
                                 }}
                                 onMouseLeave={(e) => {
-                                  if (!childActive) e.currentTarget.style.color = "#6b6584";
+                                  if (!childActive) e.currentTarget.style.color = "var(--sidebar-muted)";
                                 }}
                               >
                                 {ChildIcon ? (
@@ -270,7 +272,7 @@ export default function PainelSidebar({ companyName, open, onClose }: PainelSide
                                 ) : (
                                   <span
                                     className="h-1.5 w-1.5 rounded-full shrink-0"
-                                    style={{ background: childActive ? "#c4b5fd" : "#4a4468" }}
+                                    style={{ background: childActive ? "var(--sidebar-text)" : "var(--sidebar-muted)" }}
                                   />
                                 )}
                                 <span className="truncate">{child.label}</span>
@@ -287,9 +289,10 @@ export default function PainelSidebar({ companyName, open, onClose }: PainelSide
           ))}
 
           {/* Footer */}
-          <div className="mt-auto pt-2" style={{ borderTop: "1px solid rgba(124,58,237,0.15)" }}>
+          <div className="mt-auto pt-2" style={{ borderTop: "1px solid var(--sidebar-border)" }}>
             <Link
               href="/logout"
+              prefetch={false}
               onClick={onClose}
               className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200"
               style={{ color: "#f87171" }}

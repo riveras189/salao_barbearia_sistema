@@ -51,7 +51,7 @@ const inputClass =
   "block w-full rounded-xl border border-[var(--line)] bg-[var(--bg)] px-3 py-2 text-sm text-[var(--text)] outline-none transition placeholder:text-[var(--muted)] focus:border-[var(--primary)]";
 
 const buttonPrimaryClass =
-  "inline-flex h-11 items-center justify-center rounded-xl border border-slate-300 bg-slate-900 px-4 text-sm font-semibold text-white shadow-sm transition hover:opacity-90 dark:border-slate-600 dark:bg-slate-100 dark:text-slate-900";
+  "inline-flex h-11 items-center justify-center rounded-xl border px-4 text-sm font-semibold shadow-sm transition hover:opacity-90";
 const buttonOutlineClass =
   "inline-flex h-10 items-center justify-center rounded-xl border border-[var(--line)] bg-transparent px-3 text-sm font-medium text-[var(--text)] transition hover:opacity-90";
 
@@ -94,7 +94,15 @@ export default async function BackupPage({ searchParams }: PageProps) {
           </div>
 
           <form action={createBackupAction}>
-            <button type="submit" className={buttonPrimaryClass}>
+            <button
+              type="submit"
+              className={buttonPrimaryClass}
+              style={{
+                borderColor: "color-mix(in srgb, var(--brand-color) 30%, var(--line))",
+                background: "var(--brand-gradient)",
+                color: "#fff",
+              }}
+            >
               Fazer backup agora
             </button>
           </form>

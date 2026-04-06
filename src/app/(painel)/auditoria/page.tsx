@@ -14,17 +14,17 @@ const ui = {
   input:
     "w-full rounded-2xl border border-slate-400 bg-[var(--card)] px-4 py-3 text-sm text-[var(--text)] outline-none transition placeholder:text-[var(--muted)] focus:border-slate-700 dark:border-[var(--line)] dark:focus:border-white",
   primaryButton:
-    "inline-flex items-center justify-center rounded-2xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200",
+    "inline-flex items-center justify-center rounded-2xl border px-4 py-2.5 text-sm font-semibold shadow-sm transition",
   link:
-    "inline-flex items-center justify-center rounded-2xl border border-slate-400 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:hover:bg-slate-800",
+    "inline-flex items-center justify-center rounded-2xl border px-4 py-2.5 text-sm font-semibold shadow-sm transition",
   badge:
-    "inline-flex items-center rounded-full border border-slate-300 bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300",
+    "inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold",
   success:
-    "inline-flex items-center rounded-full border border-emerald-300 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300",
+    "inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold",
   warn:
-    "inline-flex items-center rounded-full border border-amber-300 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-300",
+    "inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold",
   danger:
-    "inline-flex items-center rounded-full border border-rose-300 bg-rose-50 px-2.5 py-1 text-xs font-semibold text-rose-700 dark:border-rose-800 dark:bg-rose-950/40 dark:text-rose-300",
+    "inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold",
   code:
     "overflow-x-auto rounded-2xl border border-[var(--line)] bg-slate-950 p-4 text-xs text-slate-100",
 };
@@ -271,7 +271,15 @@ export default async function AuditoriaPage({ searchParams }: PageProps) {
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <Link href="/dashboard" className={ui.link}>
+            <Link
+              href="/dashboard"
+              className={ui.link}
+              style={{
+                borderColor: "var(--line)",
+                background: "var(--card)",
+                color: "var(--text)",
+              }}
+            >
               Voltar ao dashboard
             </Link>
           </div>
@@ -391,11 +399,27 @@ export default async function AuditoriaPage({ searchParams }: PageProps) {
           </label>
 
           <div className="flex flex-wrap items-end gap-3 xl:col-span-6">
-            <button type="submit" className={ui.primaryButton}>
+            <button
+              type="submit"
+              className={ui.primaryButton}
+              style={{
+                borderColor: "color-mix(in srgb, var(--brand-color) 30%, var(--line))",
+                background: "var(--brand-gradient)",
+                color: "#fff",
+              }}
+            >
               Filtrar
             </button>
 
-            <Link href="/auditoria" className={ui.link}>
+            <Link
+              href="/auditoria"
+              className={ui.link}
+              style={{
+                borderColor: "var(--line)",
+                background: "var(--card)",
+                color: "var(--text)",
+              }}
+            >
               Limpar filtros
             </Link>
           </div>
@@ -430,11 +454,63 @@ export default async function AuditoriaPage({ searchParams }: PageProps) {
                   <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
                     <div className="space-y-2">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className={ui.badge}>{log.entidade}</span>
-                        <span className={getActionBadgeClass(log.acao)}>
+                        <span
+                          className={ui.badge}
+                          style={{
+                            borderColor: "color-mix(in srgb, var(--line) 70%, var(--brand-color) 30%)",
+                            background: "var(--card-2)",
+                            color: "var(--text)",
+                          }}
+                        >
+                          {log.entidade}
+                        </span>
+                        <span
+                          className={getActionBadgeClass(log.acao)}
+                          style={
+                            log.acao.toUpperCase().includes("DELETE") ||
+                            log.acao.toUpperCase().includes("EXCLUIR") ||
+                            log.acao.toUpperCase().includes("REMOVE") ||
+                            log.acao.toUpperCase().includes("CANCEL")
+                              ? {
+                                  borderColor: "rgba(225, 29, 72, 0.28)",
+                                  background: "rgba(225, 29, 72, 0.12)",
+                                  color: "rgb(190, 24, 93)",
+                                }
+                              : log.acao.toUpperCase().includes("CREATE") ||
+                                  log.acao.toUpperCase().includes("CRIAR") ||
+                                  log.acao.toUpperCase().includes("INSERT") ||
+                                  log.acao.toUpperCase().includes("CADASTRAR")
+                                ? {
+                                    borderColor: "rgba(5, 150, 105, 0.28)",
+                                    background: "rgba(5, 150, 105, 0.12)",
+                                    color: "rgb(4, 120, 87)",
+                                  }
+                                : log.acao.toUpperCase().includes("UPDATE") ||
+                                    log.acao.toUpperCase().includes("EDIT") ||
+                                    log.acao.toUpperCase().includes("ALTER") ||
+                                    log.acao.toUpperCase().includes("ATUALIZ")
+                                  ? {
+                                      borderColor: "rgba(217, 119, 6, 0.28)",
+                                      background: "rgba(217, 119, 6, 0.12)",
+                                      color: "rgb(180, 83, 9)",
+                                    }
+                                  : {
+                                      borderColor: "color-mix(in srgb, var(--line) 70%, var(--brand-color) 30%)",
+                                      background: "var(--card-2)",
+                                      color: "var(--text)",
+                                    }
+                          }
+                        >
                           {log.acao}
                         </span>
-                        <span className={ui.badge}>
+                        <span
+                          className={ui.badge}
+                          style={{
+                            borderColor: "color-mix(in srgb, var(--line) 70%, var(--brand-color) 30%)",
+                            background: "var(--card-2)",
+                            color: "var(--text)",
+                          }}
+                        >
                           ID: {log.entidadeId || "-"}
                         </span>
                       </div>
@@ -463,7 +539,16 @@ export default async function AuditoriaPage({ searchParams }: PageProps) {
                     </div>
 
                     <div className="text-xs text-[var(--muted)]">
-                      <span className={ui.badge}>{log.id}</span>
+                      <span
+                        className={ui.badge}
+                        style={{
+                          borderColor: "color-mix(in srgb, var(--line) 70%, var(--brand-color) 30%)",
+                          background: "var(--card-2)",
+                          color: "var(--text)",
+                        }}
+                      >
+                        {log.id}
+                      </span>
                     </div>
                   </div>
 

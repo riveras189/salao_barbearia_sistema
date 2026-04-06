@@ -27,6 +27,18 @@
   --brand-gradient-subtle: linear-gradient(135deg, rgba(200, 155, 60, 0.16) 0%, rgba(139, 30, 36, 0.12) 100%);
   --shadow-card: 0 8px 28px rgba(0, 0, 0, 0.28);
   --shadow-brand: 0 10px 34px rgba(200, 155, 60, 0.22);
+  --login-bg: #120f0d;
+  --login-panel: rgba(255, 255, 255, 0.03);
+  --login-panel-border: rgba(255, 255, 255, 0.1);
+  --login-text: #fff8ef;
+  --login-muted: rgba(255, 248, 239, 0.84);
+  --login-field-bg: rgba(255, 255, 255, 0.05);
+  --login-field-border: rgba(200, 155, 60, 0.22);
+  --login-focus: #c89b3c;
+  --login-button: linear-gradient(135deg, #f59e0b 0%, #991b1b 100%);
+  --login-icon: linear-gradient(135deg, #f59e0b 0%, #991b1b 100%);
+  --login-glow-top: radial-gradient(circle at top right, rgba(200, 155, 60, 0.22) 0%, transparent 50%);
+  --login-glow-bottom: radial-gradient(circle at bottom left, rgba(139, 30, 36, 0.26) 0%, transparent 50%);
 }
 
 html[data-model="barbearia_v1"] body {
@@ -35,6 +47,16 @@ html[data-model="barbearia_v1"] body {
     radial-gradient(circle at top right, rgba(200, 155, 60, 0.14), transparent 30%),
     radial-gradient(circle at bottom left, rgba(139, 30, 36, 0.18), transparent 28%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0));
+}
+
+html[data-model="barbearia_v1"] .login-brand-default,
+html[data-model="barbearia_v1"] .login-copy-default {
+  display: none;
+}
+
+html[data-model="barbearia_v1"] .login-brand-barbearia,
+html[data-model="barbearia_v1"] .login-copy-barbearia {
+  display: inline;
 }
 
 html[data-model="barbearia_v1"] .barber-stripes {
@@ -67,6 +89,87 @@ html[data-model="barbearia_v1"] .model-toggle-option.is-selected {
   background: var(--card);
 }
 
+html[data-model="barbearia_v1"] input,
+html[data-model="barbearia_v1"] select,
+html[data-model="barbearia_v1"] textarea {
+  background: var(--card) !important;
+  color: var(--text) !important;
+  border-color: var(--line) !important;
+  -webkit-text-fill-color: var(--text) !important;
+}
+
+html[data-model="barbearia_v1"] input::placeholder,
+html[data-model="barbearia_v1"] textarea::placeholder {
+  color: var(--muted) !important;
+}
+
+html[data-model="barbearia_v1"] input:-webkit-autofill,
+html[data-model="barbearia_v1"] input:-webkit-autofill:hover,
+html[data-model="barbearia_v1"] input:-webkit-autofill:focus,
+html[data-model="barbearia_v1"] textarea:-webkit-autofill,
+html[data-model="barbearia_v1"] select:-webkit-autofill {
+  -webkit-text-fill-color: var(--text) !important;
+  box-shadow: 0 0 0 1000px var(--card) inset !important;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+html[data-model="barbearia_v1"] select option {
+  background: var(--card);
+  color: var(--text);
+  -webkit-text-fill-color: var(--text);
+}
+
+html[data-model="barbearia_v1"] input:focus,
+html[data-model="barbearia_v1"] select:focus,
+html[data-model="barbearia_v1"] textarea:focus {
+  border-color: var(--brand-color) !important;
+  box-shadow: 0 0 0 3px rgba(200, 155, 60, 0.16) !important;
+}
+
+html[data-model="barbearia_v1"] .bg-slate-900.text-white,
+html[data-model="barbearia_v1"] .bg-slate-800.text-white,
+html[data-model="barbearia_v1"] .dark\:bg-white,
+html[data-model="barbearia_v1"] .dark\:bg-slate-900 {
+  background: var(--brand-gradient) !important;
+  color: #fff8ef !important;
+  border-color: rgba(200, 155, 60, 0.28) !important;
+}
+
+html[data-model="barbearia_v1"] .bg-white.text-slate-900,
+html[data-model="barbearia_v1"] .bg-slate-50.text-slate-900,
+html[data-model="barbearia_v1"] .bg-transparent.text-slate-900,
+html[data-model="barbearia_v1"] .dark\:text-slate-900,
+html[data-model="barbearia_v1"] .dark\:text-white {
+  color: #fff8ef !important;
+}
+
+html[data-model="barbearia_v1"] .bg-slate-100.text-slate-700,
+html[data-model="barbearia_v1"] .dark\:bg-slate-900.dark\:text-slate-300,
+html[data-model="barbearia_v1"] .dark\:bg-slate-900.dark\:text-white {
+  background: rgba(200, 155, 60, 0.14) !important;
+  color: var(--text) !important;
+  border-color: rgba(200, 155, 60, 0.28) !important;
+}
+
+html[data-model="barbearia_v1"] .border-slate-300.bg-white,
+html[data-model="barbearia_v1"] .border-slate-300.bg-slate-50,
+html[data-model="barbearia_v1"] .border-slate-300.bg-slate-900,
+html[data-model="barbearia_v1"] .border-slate-400.bg-white,
+html[data-model="barbearia_v1"] .border-slate-400.bg-slate-900 {
+  background: var(--brand-gradient) !important;
+  color: #fff8ef !important;
+  -webkit-text-fill-color: #fff8ef !important;
+  border-color: rgba(200, 155, 60, 0.28) !important;
+}
+
+html[data-model="barbearia_v1"] .border-slate-300.bg-white *,
+html[data-model="barbearia_v1"] .border-slate-300.bg-slate-50 *,
+html[data-model="barbearia_v1"] .border-slate-300.bg-slate-900 *,
+html[data-model="barbearia_v1"] .border-slate-400.bg-white *,
+html[data-model="barbearia_v1"] .border-slate-400.bg-slate-900 * {
+  color: #fff8ef !important;
+}
+
 :root[data-model="personalizado_v1"] {
   --brand-1: #0f766e;
   --brand-2: #0ea5e9;
@@ -74,4 +177,28 @@ html[data-model="barbearia_v1"] .model-toggle-option.is-selected {
   --accent: #0ea5e9;
   --brand-gradient: linear-gradient(135deg, #14b8a6 0%, #0ea5e9 100%);
   --brand-gradient-subtle: linear-gradient(135deg, rgba(20, 184, 166, 0.12) 0%, rgba(14, 165, 233, 0.12) 100%);
+  --login-bg: #0d1720;
+  --login-panel: rgba(255, 255, 255, 0.04);
+  --login-panel-border: rgba(20, 184, 166, 0.2);
+  --login-text: #eefcfa;
+  --login-muted: rgba(238, 252, 250, 0.82);
+  --login-field-bg: rgba(255, 255, 255, 0.05);
+  --login-field-border: rgba(20, 184, 166, 0.22);
+  --login-focus: #14b8a6;
+  --login-button: linear-gradient(135deg, #14b8a6 0%, #0ea5e9 100%);
+  --login-icon: linear-gradient(135deg, #14b8a6 0%, #0ea5e9 100%);
+  --login-glow-top: radial-gradient(circle at top right, rgba(20, 184, 166, 0.22) 0%, transparent 50%);
+  --login-glow-bottom: radial-gradient(circle at bottom left, rgba(14, 165, 233, 0.22) 0%, transparent 50%);
+}
+
+html[data-model="personalizado_v1"] .login-brand-default,
+html[data-model="personalizado_v1"] .login-copy-default,
+html[data-model="personalizado_v1"] .login-brand-barbearia,
+html[data-model="personalizado_v1"] .login-copy-barbearia {
+  display: none;
+}
+
+html[data-model="personalizado_v1"] .login-brand-personalizado,
+html[data-model="personalizado_v1"] .login-copy-personalizado {
+  display: inline;
 }

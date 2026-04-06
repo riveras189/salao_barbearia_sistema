@@ -22,6 +22,14 @@ const protectedMatchers = [
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  const secFetchDest = request.headers.get("sec-fetch-dest") || "";
+  const isRscRequest = request.headers.has("rsc");
+  const isPrefetch = request.headers.get("next-router-prefetch") === "1" || request.headers.get("purpose") === "prefetch";
+
+  if (isRscRequest || isPrefetch || (secFetchDest && secFetchDest !== "document")) {
+    return NextResponse.next();
+  }
+
   const isProtected = protectedMatchers.some(
     (route) => pathname === route || pathname.startsWith(`${route}/`)
   );

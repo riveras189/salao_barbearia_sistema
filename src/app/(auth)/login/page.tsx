@@ -31,12 +31,11 @@ export default async function LoginPage({ searchParams }: Props) {
   }
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#120f0d]">
-      {/* Animated gradient background layers */}
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden" style={{ background: "var(--login-bg)" }}>
       <div 
         className="absolute inset-0 z-0 opacity-40 animate-gradient"
           style={{
-            background: "radial-gradient(circle at top right, rgba(200,155,60,0.22) 0%, transparent 50%), radial-gradient(circle at bottom left, rgba(139,30,36,0.26) 0%, transparent 50%)",
+            background: "var(--login-glow-top), var(--login-glow-bottom)",
             filter: "blur(60px)"
           }}
         />
@@ -49,25 +48,28 @@ export default async function LoginPage({ searchParams }: Props) {
         }}
       ></div>
 
-      {/* Floating orbs */}
-      <div className="absolute top-1/4 left-1/4 h-64 w-64 rounded-full bg-amber-500/20 blur-3xl animate-float" style={{ animationDelay: '0s' }} />
-      <div className="absolute bottom-1/4 right-1/4 h-80 w-80 rounded-full bg-red-900/20 blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+      <div className="absolute top-1/4 left-1/4 h-64 w-64 rounded-full blur-3xl animate-float" style={{ animationDelay: '0s', background: 'color-mix(in srgb, var(--brand-color) 18%, transparent)' }} />
+      <div className="absolute bottom-1/4 right-1/4 h-80 w-80 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s', background: 'color-mix(in srgb, var(--accent) 18%, transparent)' }} />
 
       <div className="relative z-10 w-full max-w-md px-4">
-        <div className="w-full rounded-[2rem] border border-white/10 bg-white/[0.03] p-8 shadow-2xl backdrop-blur-2xl">
+        <div className="w-full rounded-[2rem] p-8 shadow-2xl backdrop-blur-2xl" style={{ border: '1px solid var(--login-panel-border)', background: 'var(--login-panel)' }}>
           
           <div className="mb-8 text-center flex flex-col items-center">
-            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 to-red-900 shadow-lg shadow-amber-700/30">
+            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl shadow-lg" style={{ background: 'var(--login-icon)', boxShadow: 'var(--shadow-brand)' }}>
               <Scissors className="h-6 w-6 text-white" />
             </div>
-            <p className="text-xs font-bold uppercase tracking-[0.25em]" style={{color: '#fff'}}>
-              Barbearia Sistema
+            <p className="text-xs font-bold uppercase tracking-[0.25em]" style={{ color: 'var(--login-text)' }}>
+              <span className="login-brand-default">RF Sistema</span>
+              <span className="login-brand-barbearia">Barbearia Sistema</span>
+              <span className="login-brand-personalizado">Sistema Personalizado</span>
             </p>
-            <h1 className="font-display mt-2 text-3xl font-bold tracking-tight text-white">
+            <h1 className="font-display mt-2 text-3xl font-bold tracking-tight" style={{ color: 'var(--login-text)' }}>
               Bem-vindo
             </h1>
-            <p className="mt-2 text-sm" style={{color: '#fff'}}>
-              Faça login para acessar o painel da barbearia.
+            <p className="mt-2 text-sm" style={{ color: 'var(--login-muted)' }}>
+              <span className="login-copy-default">Faça login para acessar o painel do sistema.</span>
+              <span className="login-copy-barbearia">Faça login para acessar o painel da barbearia.</span>
+              <span className="login-copy-personalizado">Faça login para acessar o painel personalizado.</span>
             </p>
           </div>
 
@@ -79,7 +81,7 @@ export default async function LoginPage({ searchParams }: Props) {
 
           <form action={loginAction} className="space-y-5">
             <div>
-              <label htmlFor="login" className="mb-1.5 block text-sm font-bold" style={{color: '#fff !important', fontWeight: 700}}>
+              <label htmlFor="login" className="mb-1.5 block text-sm font-bold" style={{ color: 'var(--login-text)', fontWeight: 700 }}>
                 Login ou e-mail
               </label>
               <input
@@ -87,13 +89,14 @@ export default async function LoginPage({ searchParams }: Props) {
                 name="login"
                 type="text"
                 required
-                className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-slate-100 focus:border-amber-400 focus:bg-white/10 focus:ring-1 focus:ring-amber-400"
+                className="w-full rounded-2xl px-4 py-3 text-sm outline-none transition-all"
+                style={{ background: 'var(--login-field-bg)', border: '1px solid var(--login-field-border)', color: 'var(--login-text)' }}
                 placeholder="Ex: admin"
               />
             </div>
 
             <div>
-              <label htmlFor="senha" className="mb-1.5 block text-sm font-bold" style={{color: '#fff !important', fontWeight: 700}}>
+              <label htmlFor="senha" className="mb-1.5 block text-sm font-bold" style={{ color: 'var(--login-text)', fontWeight: 700 }}>
                 Senha
               </label>
               <input
@@ -101,15 +104,16 @@ export default async function LoginPage({ searchParams }: Props) {
                 name="senha"
                 type="password"
                 required
-                className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition-all placeholder:text-slate-100 focus:border-amber-400 focus:bg-white/10 focus:ring-1 focus:ring-amber-400"
+                className="w-full rounded-2xl px-4 py-3 text-sm outline-none transition-all"
+                style={{ background: 'var(--login-field-bg)', border: '1px solid var(--login-field-border)', color: 'var(--login-text)' }}
                 placeholder="••••••••"
               />
             </div>
 
             <button
               type="submit"
-              className="mt-6 w-full rounded-2xl bg-gradient-to-r from-amber-500 to-red-900 px-4 py-3.5 text-sm font-bold transition-all hover:scale-[1.02] hover:shadow-lg hover:shadow-amber-700/25 active:scale-[0.98]"
-              style={{color: '#fff !important'}}
+              className="mt-6 w-full rounded-2xl px-4 py-3.5 text-sm font-bold transition-all hover:scale-[1.02] active:scale-[0.98]"
+              style={{ color: '#fff', background: 'var(--login-button)' }}
             >
               Entrar no painel
             </button>
@@ -118,8 +122,8 @@ export default async function LoginPage({ searchParams }: Props) {
         </div>
         
         <div className="mt-8 text-center">
-          <p className="text-xs" style={{color: '#fff'}}>
-            &copy; {new Date().getFullYear()} Barbearia Sistema. Todos os direitos reservados.
+          <p className="text-xs" style={{ color: 'var(--login-muted)' }}>
+            &copy; {new Date().getFullYear()} RF_Sistema. Todos os direitos reservados.
           </p>
         </div>
       </div>

@@ -29,6 +29,14 @@ function getAuthSecret() {
   return process.env.AUTH_SECRET || "dev-secret-change-me";
 }
 
+function shouldUseSecureCookie() {
+  if (process.env.AUTH_COOKIE_SECURE === "true") return true;
+  if (process.env.AUTH_COOKIE_SECURE === "false") return false;
+
+  const appUrl = process.env.APP_URL || process.env.NEXT_PUBLIC_APP_URL || "";
+  return process.env.NODE_ENV === "production" && appUrl.startsWith("https://");
+}
+
 function toBase64Url(input: string | Buffer) {
   return Buffer.from(input)
     .toString("base64")
@@ -88,7 +96,7 @@ async function setSessionCookie(user: { id: string; empresaId: string }) {
 
   jar.set(COOKIE_NAME, createToken(payload), {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: shouldUseSecureCookie(),
     sameSite: "lax",
     path: "/",
     maxAge: SESSION_TTL_SECONDS,
@@ -167,7 +175,7 @@ export async function clearSession() {
   const jar = await cookies();
   jar.set(COOKIE_NAME, "", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: shouldUseSecureCookie(),
     sameSite: "lax",
     path: "/",
     maxAge: 0,

@@ -45,6 +45,18 @@
   /* Shadows */
   --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(124, 58, 237, 0.1);
   --shadow-brand: 0 4px 24px rgba(217, 70, 239, 0.4);
+  --login-bg: #0a0615;
+  --login-panel: rgba(255, 255, 255, 0.06);
+  --login-panel-border: rgba(255, 255, 255, 0.12);
+  --login-text: #ffffff;
+  --login-muted: rgba(255, 255, 255, 0.82);
+  --login-field-bg: rgba(255, 255, 255, 0.06);
+  --login-field-border: rgba(255, 255, 255, 0.12);
+  --login-focus: #d946ef;
+  --login-button: linear-gradient(135deg, #7c3aed 0%, #d946ef 100%);
+  --login-icon: linear-gradient(135deg, #7c3aed 0%, #d946ef 100%);
+  --login-glow-top: radial-gradient(circle at top right, rgba(217, 70, 239, 0.28) 0%, transparent 50%);
+  --login-glow-bottom: radial-gradient(circle at bottom left, rgba(124, 58, 237, 0.28) 0%, transparent 50%);
 }
 
 html.theme-dark {
@@ -125,6 +137,18 @@ html.theme-dark .helper-text {
 .font-display {
   font-family: "Playfair Display", Georgia, serif;
   -webkit-font-smoothing: subpixel-antialiased;
+}
+
+.login-brand-default,
+.login-copy-default {
+  display: inline;
+}
+
+.login-brand-barbearia,
+.login-copy-barbearia,
+.login-brand-personalizado,
+.login-copy-personalizado {
+  display: none;
 }
 
 /* ─── Keyframes ──────────────────────────────────────────────── */
@@ -352,6 +376,28 @@ textarea::placeholder {
 
 /* ─── Theme overrides for Tailwind classes ──────────────────── */
 @layer utilities {
+  html:not(.theme-dark) .bg-slate-900,
+  html:not(.theme-dark) .bg-slate-800,
+  html:not(.theme-dark) .bg-slate-950,
+  html:not(.theme-dark) .bg-zinc-900,
+  html:not(.theme-dark) .bg-zinc-950,
+  html:not(.theme-dark) .bg-neutral-900,
+  html:not(.theme-dark) .bg-neutral-950,
+  html:not(.theme-dark) .bg-black {
+    color: #ffffff !important;
+  }
+
+  html:not(.theme-dark) .bg-slate-900 *,
+  html:not(.theme-dark) .bg-slate-800 *,
+  html:not(.theme-dark) .bg-slate-950 *,
+  html:not(.theme-dark) .bg-zinc-900 *,
+  html:not(.theme-dark) .bg-zinc-950 *,
+  html:not(.theme-dark) .bg-neutral-900 *,
+  html:not(.theme-dark) .bg-neutral-950 *,
+  html:not(.theme-dark) .bg-black * {
+    color: inherit !important;
+  }
+
   /* Light mode: superfícies neutras continuam com texto escuro */
   html:not(.theme-dark) .bg-white,
   html:not(.theme-dark) .bg-slate-50,
