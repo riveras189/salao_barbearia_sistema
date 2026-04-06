@@ -1,0 +1,29 @@
+ALTER TABLE "Cliente"
+  ADD COLUMN IF NOT EXISTS "fotoUrl" TEXT;
+
+ALTER TABLE "Profissional"
+  ADD COLUMN IF NOT EXISTS "fotoUrl" TEXT;
+
+ALTER TABLE "Funcionario"
+  ADD COLUMN IF NOT EXISTS "fotoUrl" TEXT,
+  ADD COLUMN IF NOT EXISTS "whatsapp" TEXT;
+
+ALTER TABLE "Produto"
+  ADD COLUMN IF NOT EXISTS "fotoUrl" TEXT,
+  ADD COLUMN IF NOT EXISTS "custo" DECIMAL(10,2) NOT NULL DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS "marca" TEXT,
+  ADD COLUMN IF NOT EXISTS "preco" DECIMAL(10,2) NOT NULL DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS "comissao" DECIMAL(5,2) NOT NULL DEFAULT 0;
+
+UPDATE "Produto"
+SET
+  "custo" = COALESCE("valorCusto", "custo"),
+  "preco" = COALESCE("valorVenda", "preco")
+WHERE "valorCusto" IS NOT NULL
+   OR "valorVenda" IS NOT NULL;
+
+ALTER TABLE "Produto"
+  ALTER COLUMN "estoqueAtual" TYPE INTEGER USING "estoqueAtual"::INTEGER,
+  ALTER COLUMN "estoqueAtual" SET DEFAULT 0,
+  ALTER COLUMN "estoqueMinimo" TYPE INTEGER USING "estoqueMinimo"::INTEGER,
+  ALTER COLUMN "estoqueMinimo" SET DEFAULT 0;
