@@ -29,6 +29,12 @@ export type BackupItem = BackupMeta & {
   sizeBytes: number;
 };
 
+export type BackupCapabilities = {
+  canCreateDump: boolean;
+  canRestoreSql: boolean;
+  isRenderEnvironment: boolean;
+};
+
 const PROJECT_ROOT = process.cwd();
 
 const BACKUP_ROOT = process.env.BACKUP_DIR
@@ -65,6 +71,10 @@ async function exists(filePath: string) {
 
 async function ensureBackupRoot() {
   await mkdir(BACKUP_ROOT, { recursive: true });
+}
+
+function isRenderEnvironment() {
+  return Boolean(process.env.RENDER || process.env.RENDER_SERVICE_ID || process.env.RENDER_EXTERNAL_URL);
 }
 
 function getTimestamp() {
@@ -132,6 +142,16 @@ async function resolveBinary(binary: "pg_dump" | "psql") {
   }
 
   return exe;
+}
+
+async function canExecuteBinary(binary: "pg_dump" | "psql") {
+  try {
+    const command = await resolveBinary(binary);
+    await runCommand(command, ["--version"]);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 async function runCommand(command: string, args: string[], extraEnv?: Record<string, string | undefined>) {
@@ -218,6 +238,19 @@ async function readMeta(folderPath: string, folderName: string): Promise<BackupM
 
 export function getBackupRootDir() {
   return BACKUP_ROOT;
+}
+
+export async function getBackupCapabilities(): Promise<BackupCapabilities> {
+  const [canCreateDump, canRestoreSql] = await Promise.all([
+    canExecuteBinary("pg_dump"),
+    canExecuteBinary("psql"),
+  ]);
+
+  return {
+    canCreateDump,
+    canRestoreSql,
+    isRenderEnvironment: isRenderEnvironment(),
+  };
 }
 
 export async function listBackups(): Promise<BackupItem[]> {
@@ -310,6 +343,45 @@ export async function createBackup() {
   await writeFile(path.join(folderPath, "meta.json"), JSON.stringify(meta, null, 2), "utf8");
 
   return meta;
+}
+
+export async function createTemporaryBackupSql() {
+  const db = parseDatabaseUrl();
+  const pgDump = await resolveBinary("pg_dump");
+  const stamp = getTimestamp();
+  const tempDir = path.join(os.tmpdir(), "salao-backup-download");
+
+  await mkdir(tempDir, { recursive: true });
+
+  const filename = `backup-${stamp}.sql`;
+  const filePath = path.join(tempDir, filename);
+
+  await runCommand(
+    pgDump,
+    [
+      "-h",
+      db.host,
+      "-p",
+      db.port,
+      "-U",
+      db.user,
+      "-d",
+      db.database,
+      "-Fp",
+      "--clean",
+      "--if-exists",
+      "--no-owner",
+      "--no-privileges",
+      "-f",
+      filePath,
+    ],
+    { PGPASSWORD: db.password }
+  );
+
+  return {
+    filename,
+    filePath,
+  };
 }
 
 async function restoreDatabaseFromSql(sqlFilePath: string) {
