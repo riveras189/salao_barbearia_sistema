@@ -1,9 +1,10 @@
 generator client {
   provider = "prisma-client-js"
+  engineType = "client"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
 }
 
 model Empresa {
@@ -73,6 +74,8 @@ model Empresa {
   clienteAcessos          ClienteAcesso[]
 
   @@index([ativo])
+
+  @@map("empresa")
 }
 
 model EmpresaConfiguracao {
@@ -93,6 +96,8 @@ model EmpresaConfiguracao {
   createdAt                         DateTime @default(now())
   updatedAt                         DateTime @updatedAt
   empresa                           Empresa  @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+
+  @@map("empresaconfiguracao")
 }
 
 model AgendamentoOnlineConfig {
@@ -107,6 +112,8 @@ model AgendamentoOnlineConfig {
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
   empresa              Empresa  @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+
+  @@map("agendamentoonlineconfig")
 }
 
 model Arquivo {
@@ -128,6 +135,8 @@ model Arquivo {
   profissionaisFoto      Profissional[]          @relation("ProfissionalFoto")
   profissionalDocumentos ProfissionalDocumento[] @relation("ProfissionalDocumentoArquivo")
   servicoImagens         ServicoImagem[]         @relation("ServicoImagemArquivo")
+
+  @@map("arquivo")
 }
 
 model Usuario {
@@ -170,6 +179,8 @@ model Usuario {
 
   @@unique([empresaId, login])
   @@index([empresaId, ativo])
+
+  @@map("usuario")
 }
 
 model Permissao {
@@ -184,6 +195,8 @@ model Permissao {
 
   @@unique([empresaId, codigo])
   @@index([empresaId, modulo])
+
+  @@map("permissao")
 }
 
 model UsuarioPermissao {
@@ -195,6 +208,8 @@ model UsuarioPermissao {
   usuario     Usuario   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
 
   @@unique([usuarioId, permissaoId])
+
+  @@map("usuariopermissao")
 }
 
 model LoginLog {
@@ -209,6 +224,8 @@ model LoginLog {
   usuario   Usuario? @relation(fields: [usuarioId], references: [id])
 
   @@index([empresaId, createdAt])
+
+  @@map("loginlog")
 }
 
 model Cliente {
@@ -248,6 +265,8 @@ model Cliente {
   @@unique([empresaId, cpf])
   @@index([empresaId, nome])
   @@index([empresaId, telefone])
+
+  @@map("cliente")
 }
 
 model ClienteTag {
@@ -260,6 +279,8 @@ model ClienteTag {
   itens     ClienteTagItem[]
 
   @@unique([empresaId, nome])
+
+  @@map("clientetag")
 }
 
 model ClienteTagItem {
@@ -270,6 +291,8 @@ model ClienteTagItem {
   tag       ClienteTag @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@unique([clienteId, tagId])
+
+  @@map("clientetagitem")
 }
 
 model ClienteAlerta {
@@ -282,6 +305,8 @@ model ClienteAlerta {
   cliente   Cliente           @relation(fields: [clienteId], references: [id], onDelete: Cascade)
 
   @@index([clienteId, ativo])
+
+  @@map("clientealerta")
 }
 
 model ClienteAcesso {
@@ -300,6 +325,8 @@ model ClienteAcesso {
 
   @@unique([empresaId, login])
   @@index([empresaId, ativo])
+
+  @@map("clienteacesso")
 }
 
 model Profissional {
@@ -344,6 +371,8 @@ model Profissional {
   @@unique([empresaId, cnpj])
   @@index([empresaId, nome])
   @@index([empresaId, ativo])
+
+  @@map("profissional")
 }
 
 model ProfissionalHorario {
@@ -358,6 +387,8 @@ model ProfissionalHorario {
   profissional    Profissional @relation(fields: [profissionalId], references: [id], onDelete: Cascade)
 
   @@index([profissionalId, diaSemana, ativo])
+
+  @@map("profissionalhorario")
 }
 
 model ProfissionalServico {
@@ -372,6 +403,8 @@ model ProfissionalServico {
   servico                    Servico      @relation(fields: [servicoId], references: [id], onDelete: Cascade)
 
   @@unique([profissionalId, servicoId])
+
+  @@map("profissionalservico")
 }
 
 model ProfissionalDocumento {
@@ -384,6 +417,8 @@ model ProfissionalDocumento {
   createdAt      DateTime                  @default(now())
   arquivo        Arquivo                   @relation("ProfissionalDocumentoArquivo", fields: [arquivoId], references: [id], onDelete: Cascade)
   profissional   Profissional              @relation(fields: [profissionalId], references: [id], onDelete: Cascade)
+
+  @@map("profissionaldocumento")
 }
 
 model Funcionario {
@@ -412,6 +447,8 @@ model Funcionario {
   usuario      Usuario?
 
   @@index([empresaId])
+
+  @@map("funcionario")
 }
 
 model ServicoCategoria {
@@ -425,6 +462,8 @@ model ServicoCategoria {
   empresa       Empresa   @relation(fields: [empresaId], references: [id], onDelete: Cascade)
 
   @@unique([empresaId, nome])
+
+  @@map("servicocategoria")
 }
 
 model Servico {
@@ -450,6 +489,8 @@ model Servico {
 
   @@index([empresaId, nome])
   @@index([empresaId, ativo])
+
+  @@map("servico")
 }
 
 model ServicoImagem {
@@ -459,6 +500,8 @@ model ServicoImagem {
   ordem     Int     @default(0)
   arquivo   Arquivo @relation("ServicoImagemArquivo", fields: [arquivoId], references: [id], onDelete: Cascade)
   servico   Servico @relation(fields: [servicoId], references: [id], onDelete: Cascade)
+
+  @@map("servicoimagem")
 }
 
 model ProdutoCategoria {
@@ -469,6 +512,8 @@ model ProdutoCategoria {
   empresa   Empresa   @relation(fields: [empresaId], references: [id], onDelete: Cascade)
 
   @@unique([empresaId, nome])
+
+  @@map("produtocategoria")
 }
 
 model Fornecedor {
@@ -488,6 +533,8 @@ model Fornecedor {
   produtos    Produto[]
 
   @@index([empresaId, nome])
+
+  @@map("fornecedor")
 }
 
 model Produto {
@@ -522,6 +569,8 @@ model Produto {
   @@index([empresaId, ativo])
   @@index([categoriaId])
   @@index([fornecedorId])
+
+  @@map("produto")
 }
 
 model EstoqueMovimentacao {
@@ -543,6 +592,8 @@ model EstoqueMovimentacao {
   @@index([empresaId, createdAt])
   @@index([produtoId, createdAt])
   @@index([usuarioId])
+
+  @@map("estoquemovimentacao")
 }
 
 model Agendamento {
@@ -570,6 +621,8 @@ model Agendamento {
   @@index([empresaId, inicio])
   @@index([profissionalId, inicio, fim])
   @@index([clienteId, inicio])
+
+  @@map("agendamento")
 }
 
 model AgendamentoServico {
@@ -585,6 +638,8 @@ model AgendamentoServico {
   servico                    Servico     @relation(fields: [servicoId], references: [id])
 
   @@index([agendamentoId, ordem])
+
+  @@map("agendamentoservico")
 }
 
 model BloqueioAgenda {
@@ -603,6 +658,8 @@ model BloqueioAgenda {
   profissional   Profissional       @relation(fields: [profissionalId], references: [id], onDelete: Cascade)
 
   @@index([profissionalId, dataInicio, dataFim])
+
+  @@map("bloqueioagenda")
 }
 
 model ListaEspera {
@@ -622,6 +679,8 @@ model ListaEspera {
   servico                 Servico?      @relation(fields: [servicoId], references: [id])
 
   @@index([empresaId, dataPreferida])
+
+  @@map("listaespera")
 }
 
 model Comanda {
@@ -656,6 +715,8 @@ model Comanda {
   @@unique([empresaId, numeroSequencial])
   @@index([empresaId, status])
   @@index([clienteId])
+
+  @@map("comanda")
 }
 
 model ComandaItem {
@@ -681,6 +742,8 @@ model ComandaItem {
   @@index([comandaId])
   @@index([servicoId])
   @@index([produtoId])
+
+  @@map("comandaitem")
 }
 
 model ComandaPagamento {
@@ -696,6 +759,8 @@ model ComandaPagamento {
   recebidoPorUsuario   Usuario?       @relation(fields: [recebidoPorUsuarioId], references: [id])
 
   @@index([comandaId, pagoEm])
+
+  @@map("comandapagamento")
 }
 
 model Recibo {
@@ -711,6 +776,8 @@ model Recibo {
   empresa         Empresa  @relation(fields: [empresaId], references: [id], onDelete: Cascade)
 
   @@unique([empresaId, numero])
+
+  @@map("recibo")
 }
 
 model CaixaMovimento {
@@ -737,6 +804,8 @@ model CaixaMovimento {
   @@index([empresaId, categoria, dataMovimento])
   @@index([referenciaTipo, referenciaId])
   @@index([usuarioId])
+
+  @@map("caixamovimento")
 }
 
 model CaixaFechamento {
@@ -760,6 +829,8 @@ model CaixaFechamento {
   @@index([empresaId, dataAbertura])
   @@index([empresaId, dataFechamento])
   @@unique([empresaId, dataAbertura])
+
+  @@map("caixafechamento")
 }
 
 model ContaReceber {
@@ -783,6 +854,8 @@ model ContaReceber {
   @@index([empresaId, status, vencimento])
   @@index([clienteId, vencimento])
   @@index([origemTipo, origemId])
+
+  @@map("contareceber")
 }
 
 model ContaReceberPagamento {
@@ -799,6 +872,8 @@ model ContaReceberPagamento {
 
   @@index([contaReceberId, pagoEm])
   @@index([usuarioId])
+
+  @@map("contareceberpagamento")
 }
 
 model ContaPagarPagamento {
@@ -815,6 +890,8 @@ model ContaPagarPagamento {
 
   @@index([contaPagarId, pagoEm])
   @@index([usuarioId])
+
+  @@map("contapagarpagamento")
 }
 
 model ContaPagar {
@@ -838,6 +915,8 @@ model ContaPagar {
   @@index([empresaId, status, vencimento])
   @@index([fornecedorId, vencimento])
   @@index([categoriaId])
+
+  @@map("contapagar")
 }
 
 model VendaPdv {
@@ -858,6 +937,8 @@ model VendaPdv {
 
   @@index([empresaId, dataCriacao])
   @@index([usuarioId, dataCriacao])
+
+  @@map("vendapdv")
 }
 
 model VendaPdvItem {
@@ -873,6 +954,8 @@ model VendaPdvItem {
 
   @@index([vendaPdvId])
   @@index([produtoId])
+
+  @@map("vendapdvitem")
 }
 
 model DespesaCategoria {
@@ -888,6 +971,8 @@ model DespesaCategoria {
 
   @@unique([empresaId, nome])
   @@index([empresaId, ativo])
+
+  @@map("despesacategoria")
 }
 
 model PaginaSite {
@@ -902,6 +987,8 @@ model PaginaSite {
   empresa      Empresa  @relation(fields: [empresaId], references: [id], onDelete: Cascade)
 
   @@unique([empresaId, slug])
+
+  @@map("paginasite")
 }
 
 model BannerSite {
@@ -917,6 +1004,8 @@ model BannerSite {
   empresa   Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
 
   @@index([empresaId, ordem, ativo])
+
+  @@map("bannersite")
 }
 
 model GaleriaItem {
@@ -932,6 +1021,8 @@ model GaleriaItem {
   empresa   Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
 
   @@index([empresaId, ordem, ativo])
+
+  @@map("galeriaitem")
 }
 
 model Depoimento {
@@ -946,6 +1037,8 @@ model Depoimento {
   empresa     Empresa  @relation(fields: [empresaId], references: [id], onDelete: Cascade)
 
   @@index([empresaId, ordem, ativo])
+
+  @@map("depoimento")
 }
 
 model Avaliacao {
@@ -963,6 +1056,8 @@ model Avaliacao {
   profissional   Profissional? @relation(fields: [profissionalId], references: [id])
 
   @@index([empresaId, nota])
+
+  @@map("avaliacao")
 }
 
 model SystemModel {
@@ -982,6 +1077,8 @@ model SystemModel {
 
   @@index([empresaId, ativo])
   @@index([padrao, ativo])
+
+  @@map("systemmodel")
 }
 
 model UsuarioSystemPreference {
@@ -998,6 +1095,8 @@ model UsuarioSystemPreference {
 
   @@index([empresaId, changedAt])
   @@index([modelId])
+
+  @@map("usuariosystempreference")
 }
 
 model EmpresaSystemPreference {
@@ -1012,6 +1111,8 @@ model EmpresaSystemPreference {
 
   @@index([modelId])
   @@index([changedAt])
+
+  @@map("empresasystempreference")
 }
 
 model AuditoriaLog {
@@ -1032,6 +1133,8 @@ model AuditoriaLog {
 
   @@index([empresaId, entidade, entidadeId])
   @@index([empresaId, createdAt])
+
+  @@map("auditorialog")
 }
 
 enum TipoArquivo {
@@ -1164,3 +1267,4 @@ enum OrigemFinanceiraTipo {
   AJUSTE
   OUTRO
 }
+

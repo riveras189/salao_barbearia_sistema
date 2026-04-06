@@ -2,6 +2,7 @@ import "dotenv/config";
 import bcrypt from "bcryptjs";
 import { PrismaClient, PapelBaseUsuario } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 
 const connectionString = process.env.DATABASE_URL;
 
@@ -9,8 +10,21 @@ if (!connectionString) {
   throw new Error("DATABASE_URL não definida no .env");
 }
 
-const adapter = new PrismaPg({ connectionString });
-const prisma = new PrismaClient({ adapter });
+function createAdapter(urlString) {
+  const url = new URL(urlString);
+
+  if (url.protocol.startsWith("postgres")) {
+    return new PrismaPg({ connectionString: urlString });
+  }
+
+  if (url.protocol.startsWith("mysql")) {
+    return new PrismaMariaDb(urlString);
+  }
+
+  throw new Error("DATABASE_URL precisa usar PostgreSQL ou MySQL.");
+}
+
+const prisma = new PrismaClient({ adapter: createAdapter(connectionString) });
 
 async function main() {
   const empresa = await prisma.empresa.upsert({

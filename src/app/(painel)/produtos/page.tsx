@@ -36,9 +36,9 @@ export default async function ProdutosPage({ searchParams }: PageProps) {
       ...(qNormalized
         ? {
             OR: [
-              { nome: { contains: qNormalized, mode: "insensitive" } },
-              { marca: { contains: qNormalized, mode: "insensitive" } },
-              { codigoBarras: { contains: qNormalized, mode: "insensitive" } },
+              { nome: { contains: qNormalized } },
+              { marca: { contains: qNormalized } },
+              { codigoBarras: { contains: qNormalized } },
             ],
           }
         : {}),

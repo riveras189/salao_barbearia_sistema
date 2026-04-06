@@ -30,9 +30,9 @@ export default async function ProfissionaisPage({ searchParams }: PageProps) {
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '');
     where.OR = [
-      { nome: { contains: qNormalized, mode: "insensitive" } },
-      { email: { contains: qNormalized, mode: "insensitive" } },
-      { cidade: { contains: qNormalized, mode: "insensitive" } },
+      { nome: { contains: qNormalized } },
+      { email: { contains: qNormalized } },
+      { cidade: { contains: qNormalized } },
       ...(qDigits
         ? [
             { cpf: { contains: qDigits } },

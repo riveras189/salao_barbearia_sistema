@@ -21,7 +21,7 @@ export async function buildEstoqueReport(
   }
 
   if (q) {
-    where.nome = { contains: q, mode: "insensitive" };
+    where.nome = { contains: q };
   }
 
   const produtos = await prisma.produto.findMany({

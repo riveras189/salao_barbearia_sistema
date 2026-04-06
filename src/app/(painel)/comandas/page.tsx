@@ -56,11 +56,11 @@ export default async function ComandasPage({ searchParams }: PageProps) {
     ...(q
       ? {
           OR: [
-            { observacoes: { contains: q, mode: "insensitive" as const } },
-            { cliente: { nome: { contains: q, mode: "insensitive" as const } } },
+            { observacoes: { contains: q } },
+            { cliente: { nome: { contains: q } } },
             {
               profissionalPrincipal: {
-                nome: { contains: q, mode: "insensitive" as const },
+                nome: { contains: q },
               },
             },
           ],

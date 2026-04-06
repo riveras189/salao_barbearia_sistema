@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { PrismaClient, PapelBaseUsuario } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import bcrypt from "bcryptjs";
 import { DEFAULT_SYSTEM_MODELS } from "../src/lib/system-models";
 
@@ -10,8 +11,21 @@ if (!connectionString) {
   throw new Error("DATABASE_URL ou DIRECT_URL não definida para executar o seed.");
 }
 
-const adapter = new PrismaPg({ connectionString });
-const prisma = new PrismaClient({ adapter });
+function createAdapter(urlString: string) {
+  const url = new URL(urlString);
+
+  if (url.protocol.startsWith("postgres")) {
+    return new PrismaPg({ connectionString: urlString });
+  }
+
+  if (url.protocol.startsWith("mysql")) {
+    return new PrismaMariaDb(urlString);
+  }
+
+  throw new Error("DATABASE_URL precisa usar PostgreSQL ou MySQL.");
+}
+
+const prisma = new PrismaClient({ adapter: createAdapter(connectionString) });
 const prismaClient = prisma as any;
 
 async function main() {

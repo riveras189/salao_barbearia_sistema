@@ -34,8 +34,8 @@ export async function buildPdvReport(
   // Payment method filter
   if (filters.q) {
     where.OR = [
-      { observacoes: { contains: filters.q, mode: "insensitive" } },
-      { usuario: { nome: { contains: filters.q, mode: "insensitive" } } },
+      { observacoes: { contains: filters.q } },
+      { usuario: { nome: { contains: filters.q } } },
     ];
   }
 

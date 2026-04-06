@@ -135,22 +135,22 @@ export default async function AuditoriaPage({ searchParams }: PageProps) {
 
   if (q) {
     where.OR = [
-      { entidade: { contains: q, mode: "insensitive" } },
-      { entidadeId: { contains: q, mode: "insensitive" } },
-      { acao: { contains: q, mode: "insensitive" } },
-      { ip: { contains: q, mode: "insensitive" } },
-      { userAgent: { contains: q, mode: "insensitive" } },
+      { entidade: { contains: q } },
+      { entidadeId: { contains: q } },
+      { acao: { contains: q } },
+      { ip: { contains: q } },
+      { userAgent: { contains: q } },
       {
         usuario: {
           is: {
-            nome: { contains: q, mode: "insensitive" },
+            nome: { contains: q },
           },
         },
       },
       {
         usuario: {
           is: {
-            login: { contains: q, mode: "insensitive" },
+            login: { contains: q },
           },
         },
       },
@@ -158,19 +158,19 @@ export default async function AuditoriaPage({ searchParams }: PageProps) {
   }
 
   if (entidade) {
-    where.entidade = { contains: entidade, mode: "insensitive" };
+    where.entidade = { contains: entidade };
   }
 
   if (acao) {
-    where.acao = { contains: acao, mode: "insensitive" };
+    where.acao = { contains: acao };
   }
 
   if (usuarioBusca) {
     where.usuario = {
       is: {
         OR: [
-          { nome: { contains: usuarioBusca, mode: "insensitive" } },
-          { login: { contains: usuarioBusca, mode: "insensitive" } },
+          { nome: { contains: usuarioBusca } },
+          { login: { contains: usuarioBusca } },
         ],
       },
     };

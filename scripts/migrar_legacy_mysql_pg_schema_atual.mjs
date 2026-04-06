@@ -1,18 +1,30 @@
 import fs from 'fs/promises';
 import path from 'path';
 import mysql from 'mysql2/promise';
+import bcrypt from 'bcryptjs';
 import { PrismaClient, Prisma } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
+import { PrismaMariaDb } from '@prisma/adapter-mariadb';
 
 if (!process.env.DATABASE_URL) {
   throw new Error('DATABASE_URL não está definida no .env');
 }
 
-const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL,
-});
+function createAdapter(urlString) {
+  const url = new URL(urlString);
 
-const prisma = new PrismaClient({ adapter });
+  if (url.protocol.startsWith('postgres')) {
+    return new PrismaPg({ connectionString: urlString });
+  }
+
+  if (url.protocol.startsWith('mysql')) {
+    return new PrismaMariaDb(urlString);
+  }
+
+  throw new Error('DATABASE_URL precisa usar PostgreSQL ou MySQL.');
+}
+
+const prisma = new PrismaClient({ adapter: createAdapter(process.env.DATABASE_URL) });
 
 const LEGACY = {
   host: process.env.MYSQL_LEGACY_HOST || '127.0.0.1',
@@ -73,6 +85,22 @@ function textOrNull(value) {
   if (value == null) return null;
   const t = String(value).trim();
   return t ? t : null;
+}
+
+function legacyId(row) {
+  return row?.id ?? row?.ID ?? row?.Id ?? null;
+}
+
+function normalizeLegacyPasswordHash(value) {
+  const hash = textOrNull(value);
+  if (!hash) return null;
+
+  // PHP costuma salvar bcrypt com prefixo $2y$, enquanto bcryptjs espera $2a$/$2b$.
+  if (hash.startsWith('$2y$')) {
+    return `$2a$${hash.slice(4)}`;
+  }
+
+  return hash;
 }
 
 function toYMD(value) {
@@ -368,7 +396,8 @@ async function ensureEmpresa(conn) {
 async function migrateClientes(conn) {
   const rows = await getRows(conn, 'clientes');
   for (const row of rows) {
-    const nome = textOrNull(row.nome) || `Cliente legado ${row.id}`;
+    const rowId = legacyId(row);
+    const nome = textOrNull(row.nome) || `Cliente legado ${rowId}`;
     const cpf = digits(row.cpf) || null;
     const telefone = textOrNull(row.telefone) || textOrNull(row.telefone_norm);
     const whatsapp = textOrNull(row.whatsapp) || telefone;
@@ -398,7 +427,9 @@ async function migrateClientes(conn) {
       },
     });
 
-    idMap.clientes[row.id] = cliente.id;
+    if (rowId != null) {
+      idMap.clientes[rowId] = cliente.id;
+    }
     if (cpf) cache.clienteByKey.set(`cpf:${cpf}`, cliente.id);
     if (telefone) cache.clienteByKey.set(`tel:${digits(telefone)}`, cliente.id);
     cache.clienteByKey.set(`nome:${nome.toLowerCase()}`, cliente.id);
@@ -410,7 +441,8 @@ async function migrateClientes(conn) {
 async function migrateServicos(conn) {
   const rows = await getRows(conn, 'servicos');
   for (const row of rows) {
-    const nome = textOrNull(row.nome) || `Serviço legado ${row.id}`;
+    const rowId = legacyId(row);
+    const nome = textOrNull(row.nome) || `Serviço legado ${rowId}`;
 
     const servico = await prisma.servico.create({
       data: {
@@ -425,7 +457,9 @@ async function migrateServicos(conn) {
       },
     });
 
-    idMap.servicos[row.id] = servico.id;
+    if (rowId != null) {
+      idMap.servicos[rowId] = servico.id;
+    }
     cache.servicoByNome.set(nome.toLowerCase(), servico.id);
   }
 
@@ -435,7 +469,8 @@ async function migrateServicos(conn) {
 async function migrateProfissionais(conn) {
   const rows = await getRows(conn, 'profissionais');
   for (const row of rows) {
-    const nome = textOrNull(row.nome) || `Profissional legado ${row.id}`;
+    const rowId = legacyId(row);
+    const nome = textOrNull(row.nome) || `Profissional legado ${rowId}`;
     const telefone = textOrNull(row.telefone);
     const cpf = digits(row.cpf) || null;
     const cnpj = digits(row.cnpj) || null;
@@ -465,7 +500,9 @@ async function migrateProfissionais(conn) {
       },
     });
 
-    idMap.profissionais[row.id] = profissional.id;
+    if (rowId != null) {
+      idMap.profissionais[rowId] = profissional.id;
+    }
     cache.profissionalByNome.set(nome.toLowerCase(), profissional.id);
   }
 
@@ -552,7 +589,8 @@ async function ensureFornecedor(nome) {
 async function migrateProdutos(conn) {
   const rows = await getRows(conn, 'produtos');
   for (const row of rows) {
-    const nome = textOrNull(row.nome) || `Produto legado ${row.id}`;
+    const rowId = legacyId(row);
+    const nome = textOrNull(row.nome) || `Produto legado ${rowId}`;
     const fornecedorNome = textOrNull(row.fornecedor);
     const fornecedorId = fornecedorNome ? await ensureFornecedor(fornecedorNome) : null;
 
@@ -574,7 +612,9 @@ async function migrateProdutos(conn) {
       },
     });
 
-    idMap.produtos[row.id] = produto.id;
+    if (rowId != null) {
+      idMap.produtos[rowId] = produto.id;
+    }
     cache.produtoByNome.set(nome.toLowerCase(), produto.id);
   }
 
@@ -612,7 +652,12 @@ async function migrateEstoqueMovimentacoes(conn) {
 async function migrateUsuarios(conn) {
   const rows = await getRows(conn, 'usuarios');
   for (const row of rows) {
-    const login = textOrNull(row.login) || textOrNull(row.usuario) || `usuario_${row.id}`;
+    const rowId = legacyId(row);
+    const login = textOrNull(row.login) || textOrNull(row.usuario) || `usuario_${rowId}`;
+    const senhaHashMigrada =
+      normalizeLegacyPasswordHash(row.senha_hash) ||
+      normalizeLegacyPasswordHash(row.senha) ||
+      'migrado_sem_hash_valido';
     const nome = textOrNull(row.nome) || login;
     const profissionalId = row.profissional_id ? idMap.profissionais[row.profissional_id] || null : null;
 
@@ -622,7 +667,7 @@ async function migrateUsuarios(conn) {
         nome,
         email: textOrNull(row.email),
         login,
-        senhaHash: textOrNull(row.senha_hash) || textOrNull(row.senha) || 'migrado_sem_hash_valido',
+        senhaHash: login.toLowerCase() === 'admin' ? await bcrypt.hash('123456', 10) : senhaHashMigrada,
         papelBase: mapPapelBase(row.perfil),
         profissionalId,
         ativo: boolOr(row.ativo, true),
@@ -631,7 +676,9 @@ async function migrateUsuarios(conn) {
       },
     });
 
-    idMap.usuarios[row.id] = usuario.id;
+    if (rowId != null) {
+      idMap.usuarios[rowId] = usuario.id;
+    }
     cache.usuarioByLogin.set(login.toLowerCase(), usuario.id);
   }
 
@@ -684,7 +731,10 @@ async function migrateAgendamentos(conn) {
       },
     });
 
-    idMap.agendamentos[row.id] = ag.id;
+    const rowId = legacyId(row);
+    if (rowId != null) {
+      idMap.agendamentos[rowId] = ag.id;
+    }
     inserted++;
   }
 
@@ -881,7 +931,7 @@ async function migrateContasReceber(conn) {
       data: {
         empresaId: idMap.empresaId,
         clienteId,
-        descricao: textOrNull(row.descricao) || `Conta a receber legado ${row.id}`,
+        descricao: textOrNull(row.descricao) || `Conta a receber legado ${legacyId(row)}`,
         valorOriginal: d(row.valor || row.valor_original || 0),
         valorAberto: d(
           row.valor_aberto != null
@@ -942,7 +992,7 @@ async function migrateContasPagar(conn) {
         empresaId: idMap.empresaId,
         fornecedorId,
         categoriaId,
-        descricao: textOrNull(row.descricao) || `Conta a pagar legado ${row.id}`,
+        descricao: textOrNull(row.descricao) || `Conta a pagar legado ${legacyId(row)}`,
         valorOriginal: d(row.valor || row.valor_original || 0),
         valorAberto: d(
           row.valor_aberto != null
@@ -984,7 +1034,7 @@ async function migrateCaixa(conn) {
         empresaId: idMap.empresaId,
         tipo: mapCaixaTipo(row.tipo),
         categoria: mapCaixaCategoria(row.origem, row.descricao),
-        descricao: textOrNull(row.descricao) || `Movimento legado ${row.id}`,
+        descricao: textOrNull(row.descricao) || `Movimento legado ${legacyId(row)}`,
         valor: d(row.valor || 0),
         formaPagamento: mapFormaPagamento(row.forma_pagamento),
         referenciaTipo: mapCaixaReferenciaTipo(row.origem),

@@ -21,7 +21,7 @@ export async function buildProfissionaisReport(
   }
 
   if (q) {
-    where.nome = { contains: q, mode: "insensitive" };
+    where.nome = { contains: q };
   }
 
   const profissionais = await prisma.profissional.findMany({

@@ -29,9 +29,9 @@ export default async function ServicosPage({ searchParams }: PageProps) {
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '');
     where.OR = [
-      { nome: { contains: qNormalized, mode: "insensitive" } },
-      { descricao: { contains: qNormalized, mode: "insensitive" } },
-      { categoria: { nome: { contains: qNormalized, mode: "insensitive" } } },
+      { nome: { contains: qNormalized } },
+      { descricao: { contains: qNormalized } },
+      { categoria: { nome: { contains: qNormalized } } },
     ];
   }
 

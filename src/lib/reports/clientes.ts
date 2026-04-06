@@ -22,9 +22,9 @@ export async function buildClientesReport(
 
   if (q) {
     where.OR = [
-      { nome: { contains: q, mode: "insensitive" } },
-      { telefone: { contains: q, mode: "insensitive" } },
-      { email: { contains: q, mode: "insensitive" } },
+      { nome: { contains: q } },
+      { telefone: { contains: q } },
+      { email: { contains: q } },
     ];
   }
 
