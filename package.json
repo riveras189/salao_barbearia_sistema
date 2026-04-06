@@ -6,6 +6,7 @@
     "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",
+    "db:seed": "tsx prisma/seed.ts",
     "test": "vitest run",
     "test:unit": "vitest run",
     "e2e": "playwright test"
@@ -39,7 +40,11 @@
     "jsdom": "^26.1.0",
     "prisma": "*",
     "tailwindcss": "^4.2.2",
+    "tsx": "^4.20.6",
     "typescript": "*",
     "vitest": "^3.2.4"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   }
 }

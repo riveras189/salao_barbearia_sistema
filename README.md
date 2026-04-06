@@ -15,14 +15,37 @@ Clone funcional do `salao_rf_sistema` com identidade visual de barbearia e supor
 2. Copie `.env.example` para `.env`
 3. Rode `npx prisma generate`
 4. Rode `npx prisma migrate deploy`
-5. Rode `npm run dev`
+5. Rode `npm run db:seed`
+6. Rode `npm run dev`
 
 ## Variáveis de ambiente
 
 - `DATABASE_URL`
 - `AUTH_SECRET`
+- `APP_URL`
+- `NEXT_PUBLIC_APP_URL`
+- `AUTH_COOKIE_SECURE`
 - `NEXT_PUBLIC_ENABLE_MODEL_SWITCH=true`
 - `ENABLE_SYSTEM_MODEL_API=true`
+
+## Deploy no Render
+
+O repositório agora inclui `render.yaml` com:
+
+- serviço web Node para o Next.js
+- banco PostgreSQL gerenciado pelo Render
+- `prisma migrate deploy` no build
+- `npm run db:seed` no build para criar a empresa inicial
+- disco persistente montado em `public/uploads`
+
+Depois de conectar o repositório no Render:
+
+1. Crie o Blueprint usando o `render.yaml`
+2. Defina `APP_URL` com a URL pública do serviço, por exemplo `https://seu-app.onrender.com`
+3. Defina `NEXT_PUBLIC_APP_URL` com a mesma URL pública
+4. Faça o primeiro deploy
+
+Observação: os uploads do sistema são gravados localmente em `public/uploads`, então o disco persistente precisa permanecer ativo no serviço.
 
 ## Testes
 
