@@ -54,29 +54,29 @@ export default async function ClientesPage({ searchParams }: PageProps) {
 
   const filteredItems = q
     ? clientes.filter((cliente) => {
-        const nome = text(cliente.nome);
-        const email = text(cliente.email);
-        const cidade = text(cliente.cidade);
-        const uf = text(cliente.uf);
+      const nome = text(cliente.nome);
+      const email = text(cliente.email);
+      const cidade = text(cliente.cidade);
+      const uf = text(cliente.uf);
 
-        const cpf = digits(cliente.cpf);
-        const telefone = digits(cliente.telefone);
-        const whatsapp = digits(cliente.whatsapp);
+      const cpf = digits(cliente.cpf);
+      const telefone = digits(cliente.telefone);
+      const whatsapp = digits(cliente.whatsapp);
 
-        const matchTexto =
-          nome.includes(qText) ||
-          email.includes(qText) ||
-          cidade.includes(qText) ||
-          uf.includes(qText);
+      const matchTexto =
+        nome.includes(qText) ||
+        email.includes(qText) ||
+        cidade.includes(qText) ||
+        uf.includes(qText);
 
-        const matchNumero =
-          qDigits.length > 0 &&
-          (cpf.includes(qDigits) ||
-            telefone.includes(qDigits) ||
-            whatsapp.includes(qDigits));
+      const matchNumero =
+        qDigits.length > 0 &&
+        (cpf.includes(qDigits) ||
+          telefone.includes(qDigits) ||
+          whatsapp.includes(qDigits));
 
-        return matchTexto || matchNumero;
-      })
+      return matchTexto || matchNumero;
+    })
     : clientes;
 
   return (

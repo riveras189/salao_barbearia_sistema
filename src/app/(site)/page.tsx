@@ -20,10 +20,10 @@ function formatMoney(value: unknown) {
     typeof value === "number"
       ? value
       : typeof value === "string"
-      ? Number(value)
-      : value && typeof value === "object" && "toNumber" in (value as any)
-      ? (value as any).toNumber()
-      : Number(value ?? 0);
+        ? Number(value)
+        : value && typeof value === "object" && "toNumber" in (value as any)
+          ? (value as any).toNumber()
+          : Number(value ?? 0);
 
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",
@@ -314,7 +314,7 @@ export default async function SitePage() {
         </div>
 
         <div className="absolute inset-0 z-10 bg-gradient-to-tr from-[#0A0615] via-[#0A0615]/90 to-fuchsia-900/40" />
-        
+
         {/* Animated Orbs for visual interest */}
         <div className="absolute z-10 bottom-0 left-0 h-96 w-96 rounded-full bg-violet-600/20 blur-3xl animate-float" />
         <div className="absolute z-10 top-20 right-20 h-80 w-80 rounded-full bg-fuchsia-600/20 blur-3xl animate-float" style={{ animationDelay: '2s' }} />
@@ -365,9 +365,8 @@ export default async function SitePage() {
                 return (
                   <div
                     key={("id" in item && item.id) || index}
-                    className={`group relative overflow-hidden rounded-3xl border border-white/10 shadow-2xl transition hover:border-fuchsia-500/50 ${
-                      index === 0 ? "col-span-2 h-64 sm:h-72" : "h-40 sm:h-48"
-                    }`}
+                    className={`group relative overflow-hidden rounded-3xl border border-white/10 shadow-2xl transition hover:border-fuchsia-500/50 ${index === 0 ? "col-span-2 h-64 sm:h-72" : "h-40 sm:h-48"
+                      }`}
                   >
                     <Image
                       src={imageUrl}
@@ -450,7 +449,7 @@ export default async function SitePage() {
             <Link
               href="/agendar"
               className="inline-flex items-center rounded-2xl bg-slate-900 px-4 py-2.5 text-sm font-bold transition hover:bg-slate-800"
-              style={{color: '#fff !important'}}
+              style={{ color: '#fff !important' }}
             >
               Agendar online
             </Link>
@@ -676,7 +675,7 @@ export default async function SitePage() {
               <Link
                 href="/cliente/login"
                 className="inline-flex items-center rounded-2xl border border-white/20 px-5 py-3 text-sm font-bold transition hover:bg-white/10"
-                style={{color: '#fff !important'}}
+                style={{ color: '#fff !important' }}
               >
                 Minha agenda
               </Link>
@@ -684,7 +683,7 @@ export default async function SitePage() {
               <Link
                 href="/cliente/cadastro"
                 className="inline-flex items-center rounded-2xl border border-white/20 px-5 py-3 text-sm font-bold transition hover:bg-white/10"
-                style={{color: '#fff !important'}}
+                style={{ color: '#fff !important' }}
               >
                 Criar cadastro
               </Link>
@@ -692,7 +691,7 @@ export default async function SitePage() {
               <Link
                 href="/login"
                 className="inline-flex items-center rounded-2xl border border-white/20 px-5 py-3 text-sm font-bold transition hover:bg-white/10"
-                style={{color: '#fff !important'}}
+                style={{ color: '#fff !important' }}
               >
                 Entrar no sistema
               </Link>
@@ -702,7 +701,7 @@ export default async function SitePage() {
                   href={`https://wa.me/${whatsapp.replace(/\D+/g, "")}`}
                   target="_blank"
                   className="inline-flex items-center rounded-2xl border border-white/20 px-5 py-3 text-sm font-bold transition hover:bg-white/10"
-                  style={{color: '#fff !important'}}
+                  style={{ color: '#fff !important' }}
                 >
                   Falar no WhatsApp
                 </a>

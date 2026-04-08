@@ -23,15 +23,15 @@ export default async function EmpresaPage({ searchParams }: PageProps) {
   let empresa =
     user?.empresaId
       ? await prisma.empresa.findUnique({
-          where: { id: user.empresaId },
-          include: {
-            logo: {
-              select: {
-                url: true,
-              },
+        where: { id: user.empresaId },
+        include: {
+          logo: {
+            select: {
+              url: true,
             },
           },
-        })
+        },
+      })
       : null;
 
   if (!empresa) {
@@ -88,9 +88,9 @@ export default async function EmpresaPage({ searchParams }: PageProps) {
         empresa={
           empresa
             ? {
-                ...empresa,
-                logoUrl: empresa.logo?.url ?? null,
-              }
+              ...empresa,
+              logoUrl: empresa.logo?.url ?? null,
+            }
             : null
         }
       />

@@ -88,12 +88,12 @@ export default async function FinanceiroPage({
     ]);
 
   return (
-    
+
     <div className="space-y-6">
       <PanelBackButton href="/dashboard" label="Voltar" />
       <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div>
-          
+
           <h1 className="text-2xl font-bold tracking-tight">Financeiro</h1>
           <p className="text-sm text-zinc-600">
             Visão geral de caixa, contas a receber e contas a pagar.
@@ -140,9 +140,8 @@ export default async function FinanceiroPage({
         <div className={cardClass()}>
           <div className="text-sm text-zinc-500">Saldo</div>
           <div
-            className={`mt-2 text-2xl font-bold ${
-              Number(resumo.saldo) >= 0 ? "text-emerald-600" : "text-red-600"
-            }`}
+            className={`mt-2 text-2xl font-bold ${Number(resumo.saldo) >= 0 ? "text-emerald-600" : "text-red-600"
+              }`}
           >
             {formatMoney(resumo.saldo)}
           </div>
@@ -351,11 +350,10 @@ export default async function FinanceiroPage({
                 </div>
 
                 <div
-                  className={`font-semibold ${
-                    movimento.tipo === TipoCaixaMovimento.ENTRADA
-                      ? "text-emerald-600"
-                      : "text-red-600"
-                  }`}
+                  className={`font-semibold ${movimento.tipo === TipoCaixaMovimento.ENTRADA
+                    ? "text-emerald-600"
+                    : "text-red-600"
+                    }`}
                 >
                   {movimento.tipo === TipoCaixaMovimento.ENTRADA ? "+" : "-"}{" "}
                   {formatMoney(movimento.valor)}

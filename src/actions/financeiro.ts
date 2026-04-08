@@ -716,11 +716,11 @@ export async function getResumoFinanceiro(params?: {
     empresaId: user.empresaId,
     ...(de || ate
       ? {
-          dataMovimento: {
-            ...(de ? { gte: de } : {}),
-            ...(ate ? { lte: ate } : {}),
-          },
-        }
+        dataMovimento: {
+          ...(de ? { gte: de } : {}),
+          ...(ate ? { lte: ate } : {}),
+        },
+      }
       : {}),
   };
 

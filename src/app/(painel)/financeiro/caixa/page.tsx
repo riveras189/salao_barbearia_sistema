@@ -136,7 +136,7 @@ export default async function CaixaPage({
         </select>
         <button
           type="submit"
-         className="inline-flex h-11 items-center justify-center rounded-xl border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+          className="inline-flex h-11 items-center justify-center rounded-xl border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-800 hover:bg-slate-50"
         >
           Filtrar
         </button>
@@ -158,9 +158,8 @@ export default async function CaixaPage({
         <div className={cardClass()}>
           <div className="text-sm text-zinc-500">Saldo</div>
           <div
-            className={`mt-2 text-2xl font-bold ${
-              saldo >= 0 ? "text-emerald-600" : "text-red-600"
-            }`}
+            className={`mt-2 text-2xl font-bold ${saldo >= 0 ? "text-emerald-600" : "text-red-600"
+              }`}
           >
             {formatMoney(saldo)}
           </div>
@@ -175,9 +174,8 @@ export default async function CaixaPage({
             {caixaHoje ? (
               <div className="mt-2 text-sm text-zinc-600">
                 <div className="flex items-center gap-2">
-                  <span className={`inline-block h-2 w-2 rounded-full ${
-                    caixaHoje.dataFechamento ? "bg-gray-400" : "bg-emerald-500"
-                  }`} />
+                  <span className={`inline-block h-2 w-2 rounded-full ${caixaHoje.dataFechamento ? "bg-gray-400" : "bg-emerald-500"
+                    }`} />
                   {caixaHoje.dataFechamento ? (
                     <>Caixa fechado às {formatDateTimeBR(caixaHoje.dataFechamento)}</>
                   ) : (
@@ -356,11 +354,10 @@ export default async function CaixaPage({
 
                   <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
                     <div
-                      className={`text-right font-semibold ${
-                        movimento.tipo === TipoCaixaMovimento.ENTRADA
-                          ? "text-emerald-600"
-                          : "text-red-600"
-                      }`}
+                      className={`text-right font-semibold ${movimento.tipo === TipoCaixaMovimento.ENTRADA
+                        ? "text-emerald-600"
+                        : "text-red-600"
+                        }`}
                     >
                       {movimento.tipo === TipoCaixaMovimento.ENTRADA ? "+" : "-"}{" "}
                       {formatMoney(movimento.valor)}

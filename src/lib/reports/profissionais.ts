@@ -36,8 +36,8 @@ export async function buildProfissionaisReport(
         item?.ativo === true
           ? "Ativo"
           : item?.ativo === false
-          ? "Inativo"
-          : "",
+            ? "Inativo"
+            : "",
       telefone: String(item?.telefone ?? ""),
       email: String(item?.email ?? ""),
       faturamentoFormatado: formatMoneyBR(0),

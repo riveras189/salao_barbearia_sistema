@@ -106,12 +106,12 @@ function StatCard({
           {helper ? <p className={`mt-2 text-xs opacity-75 ${ui.muted}`}>{helper}</p> : null}
         </div>
         {Icon && (
-          <div 
+          <div
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3"
-            style={{ 
-               backgroundColor: `${color}15`,
-               color: color,
-               boxShadow: `0 4px 12px ${color}10`
+            style={{
+              backgroundColor: `${color}15`,
+              color: color,
+              boxShadow: `0 4px 12px ${color}10`
             }}
           >
             <Icon className="h-5 w-5" />
@@ -590,14 +590,14 @@ export default async function DashboardPage() {
                   item.status === "AGENDADO"
                     ? "Agendado"
                     : item.status === "CONFIRMADO"
-                    ? "Confirmado"
-                    : item.status === "EM_ATENDIMENTO"
-                    ? "Em atendimento"
-                    : item.status === "CONCLUIDO"
-                    ? "Concluído"
-                    : item.status === "FALTOU"
-                    ? "Faltou"
-                    : item.status;
+                      ? "Confirmado"
+                      : item.status === "EM_ATENDIMENTO"
+                        ? "Em atendimento"
+                        : item.status === "CONCLUIDO"
+                          ? "Concluído"
+                          : item.status === "FALTOU"
+                            ? "Faltou"
+                            : item.status;
 
                 return (
                   <div key={item.id} className={ui.soft}>
@@ -666,12 +666,12 @@ export default async function DashboardPage() {
                           {cliente.diasRestantes === 0
                             ? "Hoje"
                             : cliente.diasRestantes === 1
-                            ? "Amanhã"
-                            : `Em ${cliente.diasRestantes} dias`}
+                              ? "Amanhã"
+                              : `Em ${cliente.diasRestantes} dias`}
                         </p>
 
                         {(cliente.whatsapp || cliente.telefone) &&
-                        (cliente.whatsapp || cliente.telefone)?.replace(/\D+/g, "") ? (
+                          (cliente.whatsapp || cliente.telefone)?.replace(/\D+/g, "") ? (
                           <a
                             href={`https://wa.me/${(cliente.whatsapp || cliente.telefone || "").replace(/\D+/g, "")}`}
                             target="_blank"

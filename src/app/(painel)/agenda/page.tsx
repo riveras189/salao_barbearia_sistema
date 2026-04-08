@@ -195,13 +195,13 @@ export default async function AgendaPage({ searchParams }: PageProps) {
     profissionalId,
     bloqueio: true,
   });
-const pauseAutoRefresh = showNovo || showBloqueio;
+  const pauseAutoRefresh = showNovo || showBloqueio;
 
-return (
-  <div>
-    {!pauseAutoRefresh ? (
-      <AgendaAutoRefresh intervalMs={10000} />
-    ) : null}
+  return (
+    <div>
+      {!pauseAutoRefresh ? (
+        <AgendaAutoRefresh intervalMs={10000} />
+      ) : null}
 
       <PageHeader
         title="Agenda"

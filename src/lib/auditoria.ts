@@ -21,8 +21,8 @@ export async function registrarAuditoria(params: RegistrarAuditoriaParams) {
       descricao: params.descricao ?? undefined,
       dadosDepois: params.modulo
         ? {
-            modulo: params.modulo,
-          }
+          modulo: params.modulo,
+        }
         : undefined,
     },
   });

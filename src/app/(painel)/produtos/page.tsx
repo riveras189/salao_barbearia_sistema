@@ -25,9 +25,9 @@ export default async function ProdutosPage({ searchParams }: PageProps) {
 
   const qNormalized = q
     ? q
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
     : '';
 
   const produtos = await prisma.produto.findMany({
@@ -35,12 +35,12 @@ export default async function ProdutosPage({ searchParams }: PageProps) {
       empresaId: user.empresaId,
       ...(qNormalized
         ? {
-            OR: [
-              { nome: { contains: qNormalized } },
-              { marca: { contains: qNormalized } },
-              { codigoBarras: { contains: qNormalized } },
-            ],
-          }
+          OR: [
+            { nome: { contains: qNormalized } },
+            { marca: { contains: qNormalized } },
+            { codigoBarras: { contains: qNormalized } },
+          ],
+        }
         : {}),
     },
     orderBy: { nome: "asc" },
@@ -48,7 +48,7 @@ export default async function ProdutosPage({ searchParams }: PageProps) {
 
   return (
     <div className="space-y-6">
-    
+
 
       <PageHeader
         title="Produtos"
@@ -124,11 +124,10 @@ export default async function ProdutosPage({ searchParams }: PageProps) {
                     </h3>
 
                     <span
-                      className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
-                        baixo
-                          ? "bg-amber-100 text-amber-700"
-                          : "bg-emerald-100 text-emerald-700"
-                      }`}
+                      className={`rounded-full px-2.5 py-1 text-xs font-semibold ${baixo
+                        ? "bg-amber-100 text-amber-700"
+                        : "bg-emerald-100 text-emerald-700"
+                        }`}
                     >
                       {baixo ? "Estoque baixo" : "Em estoque"}
                     </span>
@@ -165,7 +164,7 @@ export default async function ProdutosPage({ searchParams }: PageProps) {
 
                 <Link
                   href={`/estoque?produtoId=${produto.id}`}
-                 className="inline-flex h-11 items-center justify-center rounded-xl border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+                  className="inline-flex h-11 items-center justify-center rounded-xl border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-800 hover:bg-slate-50"
                 >
                   Movimentar estoque
                 </Link>

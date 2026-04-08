@@ -64,7 +64,7 @@ export async function GET(req: NextRequest) {
     const pdfDoc = await PDFDocument.create();
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
     const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-    
+
     let page = pdfDoc.addPage();
     const { width, height } = page.getSize();
     let y = height - 50;
@@ -90,7 +90,7 @@ export async function GET(req: NextRequest) {
           const protocol = req.headers.get("x-forwarded-proto") || (host.includes("localhost") ? "http" : "https");
           finalUrl = `${protocol}://${host}${finalUrl}`;
         }
-        
+
         const logoRes = await fetch(finalUrl);
         if (logoRes.ok) {
           const logoBuffer = await logoRes.arrayBuffer();
@@ -177,7 +177,7 @@ export async function GET(req: NextRequest) {
       borderWidth: 1,
     });
     page.drawText("Faturamento", { x: 50, y: y - 10, size: 8, font, color: rgb(0.4, 0.4, 0.5) });
-    page.drawText(`R$ ${totalServico.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`, { x: 50, y: y - 25, size: 12, font: fontBold, color: rgb(0.1, 0.1, 0.1) });
+    page.drawText(`R$ ${totalServico.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, { x: 50, y: y - 25, size: 12, font: fontBold, color: rgb(0.1, 0.1, 0.1) });
 
     // Box 2
     page.drawRectangle({
@@ -190,7 +190,7 @@ export async function GET(req: NextRequest) {
       borderWidth: 1,
     });
     page.drawText("Total de Comissoes", { x: 40 + boxWidth + 30, y: y - 10, size: 8, font, color: rgb(0.4, 0.4, 0.5) });
-    page.drawText(`R$ ${totalComissao.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`, { x: 40 + boxWidth + 30, y: y - 25, size: 12, font: fontBold, color: rgb(0.1, 0.1, 0.1) });
+    page.drawText(`R$ ${totalComissao.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, { x: 40 + boxWidth + 30, y: y - 25, size: 12, font: fontBold, color: rgb(0.1, 0.1, 0.1) });
 
     y -= 50;
 
@@ -201,7 +201,7 @@ export async function GET(req: NextRequest) {
 
     const cols = [40, 160, 310, 390, 470];
     const headersContent = ["Profissional", "Servico", "Data", "Valor", "Comissao"];
-    
+
     // Draw row background header
     page.drawRectangle({
       x: 40,
@@ -232,8 +232,8 @@ export async function GET(req: NextRequest) {
       page.drawText(sanitize((item.profissional?.nome || "Secundario").substring(0, 18)), { x: cols[0] + 5, y, size: 9, font });
       page.drawText(sanitize(item.descricao.substring(0, 30)), { x: cols[1] + 5, y, size: 9, font });
       page.drawText(dataStr, { x: cols[2] + 5, y, size: 9, font });
-      page.drawText(`R$ ${valor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`, { x: cols[3] + 5, y, size: 9, font });
-      page.drawText(`R$ ${comissao.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`, { x: cols[4] + 5, y, size: 9, font });
+      page.drawText(`R$ ${valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, { x: cols[3] + 5, y, size: 9, font });
+      page.drawText(`R$ ${comissao.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, { x: cols[4] + 5, y, size: 9, font });
 
       // separator line
       y -= 10;

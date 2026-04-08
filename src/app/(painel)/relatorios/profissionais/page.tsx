@@ -43,7 +43,7 @@ function StatCard({ title, value, icon: Icon, color }: any) {
           <div className={ui.statValue}>{value}</div>
         </div>
         {Icon && (
-          <div 
+          <div
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3"
             style={{ backgroundColor: `${color}15`, color: color, boxShadow: `0 4px 12px ${color}10` }}
           >
@@ -58,7 +58,7 @@ function StatCard({ title, value, icon: Icon, color }: any) {
 export default async function ProfissionaisRelatorio({ searchParams }: PageProps) {
   const user = await requireUser();
   const sp = await searchParams; // Wait for resolving
-  
+
   const inicioStr = sp.inicio;
   const fimStr = sp.fim;
   const profissionalId = sp.profissionalId;
@@ -91,7 +91,7 @@ export default async function ProfissionaisRelatorio({ searchParams }: PageProps
   const where: any = {
     tipo: "SERVICO",
   };
-  
+
   where.comanda = {
     empresaId: user.empresaId,
     status: "FECHADA",
@@ -149,7 +149,7 @@ export default async function ProfissionaisRelatorio({ searchParams }: PageProps
           </p>
         </div>
         <div className="absolute -right-10 -top-10 h-64 w-64 rounded-full bg-brand-gradient opacity-[0.05] blur-[80px] animate-float" />
-        
+
         <div className="flex gap-3 relative z-10 flex-col sm:flex-row items-start sm:items-center">
           <a
             href="/relatorios/profissionais-servicos"
@@ -187,28 +187,28 @@ export default async function ProfissionaisRelatorio({ searchParams }: PageProps
       >
         <div className="flex-1 w-full relative z-10">
           <label htmlFor="inicio" className={ui.label}>Data Início</label>
-          <input 
-            type="date" 
-            id="inicio" 
-            name="inicio" 
+          <input
+            type="date"
+            id="inicio"
+            name="inicio"
             defaultValue={inicioStr || dateStrAtDay(inicioDate)}
             className={ui.input}
           />
         </div>
         <div className="flex-1 w-full relative z-10">
           <label htmlFor="fim" className={ui.label}>Data Fim</label>
-          <input 
-            type="date" 
-            id="fim" 
+          <input
+            type="date"
+            id="fim"
             name="fim"
-            defaultValue={fimStr || dateStrAtDay(fimDate)} 
+            defaultValue={fimStr || dateStrAtDay(fimDate)}
             className={ui.input}
           />
         </div>
         <div className="flex-[1.5] w-full relative z-10">
           <label htmlFor="profissionalId" className={ui.label}>Profissional</label>
-          <select 
-            id="profissionalId" 
+          <select
+            id="profissionalId"
             name="profissionalId"
             defaultValue={profissionalId || ""}
             className={ui.input}
@@ -270,8 +270,8 @@ export default async function ProfissionaisRelatorio({ searchParams }: PageProps
               itens.map((item) => (
                 <tr key={item.id} className="hover:bg-[var(--line-2)]/30 transition-colors">
                   <td className={ui.td}>
-                    {item.comanda?.fechadaEm 
-                      ? new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short" }).format(item.comanda.fechadaEm) 
+                    {item.comanda?.fechadaEm
+                      ? new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short" }).format(item.comanda.fechadaEm)
                       : "-"}
                   </td>
                   <td className={ui.td + " font-medium"}>

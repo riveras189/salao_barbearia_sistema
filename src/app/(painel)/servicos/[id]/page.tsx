@@ -98,11 +98,10 @@ export default async function ServicoDetalhePage({ params }: PageProps) {
             <div>
               <span className="font-semibold text-slate-900">Status:</span>{" "}
               <span
-                className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
-                  servico.ativo
-                    ? "bg-emerald-100 text-emerald-700"
-                    : "bg-slate-200 text-slate-700"
-                }`}
+                className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${servico.ativo
+                  ? "bg-emerald-100 text-emerald-700"
+                  : "bg-slate-200 text-slate-700"
+                  }`}
               >
                 {servico.ativo ? "Ativo" : "Inativo"}
               </span>

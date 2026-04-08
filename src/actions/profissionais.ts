@@ -241,14 +241,14 @@ export async function saveProfissionalHorariosAction(formData: FormData) {
       };
     })
     .filter(Boolean) as {
-    profissionalId: string;
-    diaSemana: number;
-    horaInicio: string;
-    horaFim: string;
-    intervaloInicio: string | null;
-    intervaloFim: string | null;
-    ativo: boolean;
-  }[];
+      profissionalId: string;
+      diaSemana: number;
+      horaInicio: string;
+      horaFim: string;
+      intervaloInicio: string | null;
+      intervaloFim: string | null;
+      ativo: boolean;
+    }[];
 
   await prisma.profissionalHorario.deleteMany({
     where: { profissionalId },

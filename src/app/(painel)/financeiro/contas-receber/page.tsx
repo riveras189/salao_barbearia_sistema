@@ -90,25 +90,25 @@ export default async function ContasReceberPage({
 
   const contas = q
     ? contasRaw.filter((conta) => {
-        const clienteNome = (conta.cliente?.nome || "")
-          .toLowerCase()
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '');
-        const descricao = (conta.descricao || "")
-          .toLowerCase()
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '');
-        const origem = (conta.origemTipo || "")
-          .toLowerCase()
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '');
+      const clienteNome = (conta.cliente?.nome || "")
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+      const descricao = (conta.descricao || "")
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+      const origem = (conta.origemTipo || "")
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
 
-        return (
-          descricao.includes(q) ||
-          clienteNome.includes(q) ||
-          origem.includes(q)
-        );
-      })
+      return (
+        descricao.includes(q) ||
+        clienteNome.includes(q) ||
+        origem.includes(q)
+      );
+    })
     : contasRaw;
 
   return (

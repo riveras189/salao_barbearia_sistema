@@ -963,8 +963,8 @@ export default async function SitePage({ searchParams }: PageProps) {
                   type="number"
                   defaultValue={String(
                     empresa.agendamentoOnlineConfig?.antecedenciaMaxDias ??
-                      empresa.configuracao?.diasAntecedenciaAgendamentoOnline ??
-                      30,
+                    empresa.configuracao?.diasAntecedenciaAgendamentoOnline ??
+                    30,
                   )}
                 />
                 <Field

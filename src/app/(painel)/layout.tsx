@@ -19,10 +19,10 @@ export default async function PainelLayout({
     })
     .catch(() => null);
 
-const companyName =
-  empresa?.nomeFantasia ||
-  empresa?.razaoSocial ||
-  "Riveras Barbearia";
+  const companyName =
+    empresa?.nomeFantasia ||
+    empresa?.razaoSocial ||
+    "Riveras Barbearia";
 
   return <PainelShell companyName={companyName} userPapelBase={user?.papelBase}>{children}</PainelShell>;
 }

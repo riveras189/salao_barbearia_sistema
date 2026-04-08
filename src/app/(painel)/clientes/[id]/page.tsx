@@ -75,7 +75,7 @@ export default async function ClienteDetalhePage({ params }: PageProps) {
           <h2 className="text-lg font-semibold text-slate-900">Dados principais</h2>
 
           <div className="mt-4 space-y-3 text-sm">
-          <div>
+            <div>
               <span className="font-semibold text-slate-900">Nome:</span>{" "}
               <span className="text-slate-700">{cliente.nome}</span>
             </div>
@@ -106,11 +106,10 @@ export default async function ClienteDetalhePage({ params }: PageProps) {
             <div>
               <span className="font-semibold text-slate-900">Status:</span>{" "}
               <span
-                className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
-                  cliente.ativo
-                    ? "bg-emerald-100 text-emerald-700"
-                    : "bg-slate-200 text-slate-700"
-                }`}
+                className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${cliente.ativo
+                  ? "bg-emerald-100 text-emerald-700"
+                  : "bg-slate-200 text-slate-700"
+                  }`}
               >
                 {cliente.ativo ? "Ativo" : "Inativo"}
               </span>

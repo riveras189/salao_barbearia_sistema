@@ -35,11 +35,11 @@ export default async function ProfissionaisPage({ searchParams }: PageProps) {
       { cidade: { contains: qNormalized } },
       ...(qDigits
         ? [
-            { cpf: { contains: qDigits } },
-            { cnpj: { contains: qDigits } },
-            { telefone: { contains: qDigits } },
-            { whatsapp: { contains: qDigits } },
-          ]
+          { cpf: { contains: qDigits } },
+          { cnpj: { contains: qDigits } },
+          { telefone: { contains: qDigits } },
+          { whatsapp: { contains: qDigits } },
+        ]
         : []),
     ];
   }

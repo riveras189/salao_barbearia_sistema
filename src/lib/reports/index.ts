@@ -10,29 +10,29 @@ import { buildPdvReport } from "./pdv";
 async function getCompany(empresaId?: string) {
   const empresa = empresaId
     ? await prisma.empresa.findUnique({
-        where: { id: empresaId },
-        select: {
-          nomeFantasia: true,
-          razaoSocial: true,
-          logo: {
-            select: {
-              url: true,
-            },
+      where: { id: empresaId },
+      select: {
+        nomeFantasia: true,
+        razaoSocial: true,
+        logo: {
+          select: {
+            url: true,
           },
         },
-      })
+      },
+    })
     : await prisma.empresa.findFirst({
-        orderBy: { createdAt: "asc" },
-        select: {
-          nomeFantasia: true,
-          razaoSocial: true,
-          logo: {
-            select: {
-              url: true,
-            },
+      orderBy: { createdAt: "asc" },
+      select: {
+        nomeFantasia: true,
+        razaoSocial: true,
+        logo: {
+          select: {
+            url: true,
           },
         },
-      });
+      },
+    });
 
   return {
     companyName:

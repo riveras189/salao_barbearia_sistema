@@ -46,8 +46,8 @@ export async function buildEstoqueReport(
           estoqueAtual <= 0
             ? "Zerado"
             : estoqueMinimo > 0 && estoqueAtual <= estoqueMinimo
-            ? "Crítico"
-            : "Normal",
+              ? "Crítico"
+              : "Normal",
         valorEstoqueFormatado: formatMoneyBR(valorEstoque),
         _valorEstoque: valorEstoque,
       };

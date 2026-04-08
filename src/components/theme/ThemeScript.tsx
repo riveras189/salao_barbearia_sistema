@@ -1,3 +1,5 @@
+import Script from "next/script";
+
 const script = `
 (() => {
   try {
@@ -14,5 +16,11 @@ const script = `
 `;
 
 export default function ThemeScript() {
-  return <script dangerouslySetInnerHTML={{ __html: script }} />;
+  return (
+    <Script
+      id="theme-init"
+      dangerouslySetInnerHTML={{ __html: script }}
+      strategy="beforeInteractive"
+    />
+  );
 }

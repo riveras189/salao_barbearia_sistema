@@ -14,10 +14,10 @@ function formatMoney(value: unknown) {
     typeof value === "number"
       ? value
       : typeof value === "string"
-      ? Number(value)
-      : value && typeof value === "object" && "toNumber" in (value as any)
-      ? (value as any).toNumber()
-      : Number(value ?? 0);
+        ? Number(value)
+        : value && typeof value === "object" && "toNumber" in (value as any)
+          ? (value as any).toNumber()
+          : Number(value ?? 0);
 
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",

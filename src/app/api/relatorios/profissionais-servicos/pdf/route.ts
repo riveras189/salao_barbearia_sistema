@@ -32,21 +32,21 @@ export async function GET(request: Request) {
       }),
       profissionalId
         ? prisma.profissional.findFirst({
-            where: {
-              id: profissionalId,
-              empresaId: user.empresaId,
-            },
-            select: { nome: true },
-          })
+          where: {
+            id: profissionalId,
+            empresaId: user.empresaId,
+          },
+          select: { nome: true },
+        })
         : null,
       servicoId
         ? prisma.servico.findFirst({
-            where: {
-              id: servicoId,
-              empresaId: user.empresaId,
-            },
-            select: { nome: true },
-          })
+          where: {
+            id: servicoId,
+            empresaId: user.empresaId,
+          },
+          select: { nome: true },
+        })
         : null,
     ]);
 

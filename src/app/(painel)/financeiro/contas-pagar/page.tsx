@@ -94,17 +94,17 @@ export default async function ContasPagarPage({
 
   const contas = q
     ? contasRaw.filter((conta) => {
-        const fornecedorNome = (conta.fornecedor?.nome || "")
-          .toLowerCase()
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '');
-        const descricao = (conta.descricao || "")
-          .toLowerCase()
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '');
+      const fornecedorNome = (conta.fornecedor?.nome || "")
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+      const descricao = (conta.descricao || "")
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
 
-        return descricao.includes(q) || fornecedorNome.includes(q);
-      })
+      return descricao.includes(q) || fornecedorNome.includes(q);
+    })
     : contasRaw;
 
   return (

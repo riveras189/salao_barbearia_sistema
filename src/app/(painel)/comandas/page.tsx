@@ -50,21 +50,21 @@ export default async function ComandasPage({ searchParams }: PageProps) {
   const where = {
     empresaId: user.empresaId,
     ...(status &&
-    ["ABERTA", "EM_ANDAMENTO", "FECHADA", "CANCELADA"].includes(status)
+      ["ABERTA", "EM_ANDAMENTO", "FECHADA", "CANCELADA"].includes(status)
       ? { status: status as any }
       : {}),
     ...(q
       ? {
-          OR: [
-            { observacoes: { contains: q } },
-            { cliente: { nome: { contains: q } } },
-            {
-              profissionalPrincipal: {
-                nome: { contains: q },
-              },
+        OR: [
+          { observacoes: { contains: q } },
+          { cliente: { nome: { contains: q } } },
+          {
+            profissionalPrincipal: {
+              nome: { contains: q },
             },
-          ],
-        }
+          },
+        ],
+      }
       : {}),
   };
 

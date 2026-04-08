@@ -468,37 +468,37 @@ export default async function AuditoriaPage({ searchParams }: PageProps) {
                           className={getActionBadgeClass(log.acao)}
                           style={
                             log.acao.toUpperCase().includes("DELETE") ||
-                            log.acao.toUpperCase().includes("EXCLUIR") ||
-                            log.acao.toUpperCase().includes("REMOVE") ||
-                            log.acao.toUpperCase().includes("CANCEL")
+                              log.acao.toUpperCase().includes("EXCLUIR") ||
+                              log.acao.toUpperCase().includes("REMOVE") ||
+                              log.acao.toUpperCase().includes("CANCEL")
                               ? {
-                                  borderColor: "rgba(225, 29, 72, 0.28)",
-                                  background: "rgba(225, 29, 72, 0.12)",
-                                  color: "rgb(190, 24, 93)",
-                                }
+                                borderColor: "rgba(225, 29, 72, 0.28)",
+                                background: "rgba(225, 29, 72, 0.12)",
+                                color: "rgb(190, 24, 93)",
+                              }
                               : log.acao.toUpperCase().includes("CREATE") ||
-                                  log.acao.toUpperCase().includes("CRIAR") ||
-                                  log.acao.toUpperCase().includes("INSERT") ||
-                                  log.acao.toUpperCase().includes("CADASTRAR")
+                                log.acao.toUpperCase().includes("CRIAR") ||
+                                log.acao.toUpperCase().includes("INSERT") ||
+                                log.acao.toUpperCase().includes("CADASTRAR")
                                 ? {
-                                    borderColor: "rgba(5, 150, 105, 0.28)",
-                                    background: "rgba(5, 150, 105, 0.12)",
-                                    color: "rgb(4, 120, 87)",
-                                  }
+                                  borderColor: "rgba(5, 150, 105, 0.28)",
+                                  background: "rgba(5, 150, 105, 0.12)",
+                                  color: "rgb(4, 120, 87)",
+                                }
                                 : log.acao.toUpperCase().includes("UPDATE") ||
-                                    log.acao.toUpperCase().includes("EDIT") ||
-                                    log.acao.toUpperCase().includes("ALTER") ||
-                                    log.acao.toUpperCase().includes("ATUALIZ")
+                                  log.acao.toUpperCase().includes("EDIT") ||
+                                  log.acao.toUpperCase().includes("ALTER") ||
+                                  log.acao.toUpperCase().includes("ATUALIZ")
                                   ? {
-                                      borderColor: "rgba(217, 119, 6, 0.28)",
-                                      background: "rgba(217, 119, 6, 0.12)",
-                                      color: "rgb(180, 83, 9)",
-                                    }
+                                    borderColor: "rgba(217, 119, 6, 0.28)",
+                                    background: "rgba(217, 119, 6, 0.12)",
+                                    color: "rgb(180, 83, 9)",
+                                  }
                                   : {
-                                      borderColor: "color-mix(in srgb, var(--line) 70%, var(--brand-color) 30%)",
-                                      background: "var(--card-2)",
-                                      color: "var(--text)",
-                                    }
+                                    borderColor: "color-mix(in srgb, var(--line) 70%, var(--brand-color) 30%)",
+                                    background: "var(--card-2)",
+                                    color: "var(--text)",
+                                  }
                           }
                         >
                           {log.acao}

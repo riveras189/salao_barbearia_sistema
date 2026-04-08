@@ -265,7 +265,7 @@ export async function criarAgendamentoSiteAction(
     // Criar/atualizar ClienteAcesso se houver login
     if (login) {
       const loginLimpo = login.toLowerCase();
-      
+
       // Verificar se o login já existe em outro cliente
       const acessoExistente = await prisma.clienteAcesso.findFirst({
         where: {
@@ -286,7 +286,7 @@ export async function criarAgendamentoSiteAction(
 
       // Criar ou atualizar o acesso do cliente
       const senhaCriptografada = bcrypt.hashSync(senha, 10);
-      
+
       const acessoDoCliente = await prisma.clienteAcesso.findFirst({
         where: {
           clienteId: cliente.id,

@@ -54,29 +54,29 @@ export default async function FuncionariosPage({ searchParams }: PageProps) {
 
   const filteredItems = q
     ? funcionarios.filter((funcionario) => {
-        const nome = text(funcionario.nome);
-        const email = text(funcionario.email);
-        const cidade = text(funcionario.cidade);
-        const uf = text(funcionario.uf);
+      const nome = text(funcionario.nome);
+      const email = text(funcionario.email);
+      const cidade = text(funcionario.cidade);
+      const uf = text(funcionario.uf);
 
-        const cpf = digits(funcionario.cpf);
-        const telefone = digits(funcionario.telefone);
-        const whatsapp = digits(funcionario.whatsapp);
+      const cpf = digits(funcionario.cpf);
+      const telefone = digits(funcionario.telefone);
+      const whatsapp = digits(funcionario.whatsapp);
 
-        const matchTexto =
-          nome.includes(qText) ||
-          email.includes(qText) ||
-          cidade.includes(qText) ||
-          uf.includes(qText);
+      const matchTexto =
+        nome.includes(qText) ||
+        email.includes(qText) ||
+        cidade.includes(qText) ||
+        uf.includes(qText);
 
-        const matchNumero =
-          qDigits.length > 0 &&
-          (cpf.includes(qDigits) ||
-            telefone.includes(qDigits) ||
-            whatsapp.includes(qDigits));
+      const matchNumero =
+        qDigits.length > 0 &&
+        (cpf.includes(qDigits) ||
+          telefone.includes(qDigits) ||
+          whatsapp.includes(qDigits));
 
-        return matchTexto || matchNumero;
-      })
+      return matchTexto || matchNumero;
+    })
     : funcionarios;
 
   return (

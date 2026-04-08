@@ -248,11 +248,10 @@ export default async function EstoquePage({ searchParams }: PageProps) {
                         </div>
 
                         <span
-                          className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
-                            mov.tipo === "ENTRADA"
-                              ? "bg-emerald-100 text-emerald-700"
-                              : "bg-red-100 text-red-700"
-                          }`}
+                          className={`rounded-full px-2.5 py-1 text-xs font-semibold ${mov.tipo === "ENTRADA"
+                            ? "bg-emerald-100 text-emerald-700"
+                            : "bg-red-100 text-red-700"
+                            }`}
                         >
                           {mov.tipo === "ENTRADA" ? "Entrada" : "Saída"}
                         </span>

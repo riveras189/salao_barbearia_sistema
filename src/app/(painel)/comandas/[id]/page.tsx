@@ -217,11 +217,10 @@ export default async function ComandaDetalhePage({
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
                         <span
-                          className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
-                            item.tipo === "SERVICO"
-                              ? "bg-blue-100 text-blue-700"
-                              : "bg-emerald-100 text-emerald-700"
-                          }`}
+                          className={`rounded-full px-2.5 py-1 text-xs font-semibold ${item.tipo === "SERVICO"
+                            ? "bg-blue-100 text-blue-700"
+                            : "bg-emerald-100 text-emerald-700"
+                            }`}
                         >
                           {item.tipo === "SERVICO" ? "Serviço" : "Produto"}
                         </span>

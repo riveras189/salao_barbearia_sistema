@@ -6,7 +6,6 @@ import { createHmac, timingSafeEqual } from "crypto";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { PapelBaseUsuario } from "@prisma/client";
-
 const COOKIE_NAME = "salao_session";
 const SESSION_TTL_SECONDS = 60 * 60 * 12;
 
